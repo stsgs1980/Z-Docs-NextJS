@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[80281,["7177","static/chunks/app/layout-710c88f66c50f8ba.js"],"ThemeProvider"]
+3:I[57121,[],""]
+4:I[74581,[],""]
+:HL["/StsDev-Wiki-Template/_next/static/css/bd58850cae2405ea.css","style"]
+0:{"rsc":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/StsDev-Wiki-Template/_next/static/css/bd58850cae2405ea.css","precedence":"next"}]],["$","html",null,{"lang":"en","suppressHydrationWarning":true,"children":["$","body",null,{"className":"__variable_28ea3f __variable_85c01c antialiased bg-background text-foreground","children":["$","$L2",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]}]}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"cXImHWOvwzbLQp3KCJ6In"}
