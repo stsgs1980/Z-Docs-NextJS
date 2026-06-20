@@ -15,17 +15,13 @@ interface CodeBlockProps {
 }
 
 /**
- * CodeBlock — terminal-style code display with syntax highlighting.
- *
- * Visual design: dark-zai skin, terminal chrome (traffic light dots),
- * cursor-blink on language label, neon accent on copy button.
+ * CodeBlock — code display with syntax highlighting.
  *
  * Architecture:
  * - Theme-aware: switches oneDark/oneLight based on resolvedTheme
  * - No SSR flash: renders a skeleton placeholder until mounted
  * - Copy button with clipboard API + fallback
  * - Line numbers + optional filename header
- * - Terminal window chrome (macOS-style dots)
  * - CSS custom properties from globals.css (no hardcoded colors)
  */
 export function CodeBlock({
@@ -74,21 +70,13 @@ export function CodeBlock({
         className="my-4 rounded-lg overflow-hidden"
         style={{ border: `1px solid rgba(0,0,0,0.08)` }}
       >
-        {/* Terminal chrome header */}
         <div
           className="flex items-center justify-between px-4 py-2.5 border-b"
           style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
         >
-          <div className="flex items-center gap-3">
-            <div className="zai-terminal-dots">
-              <span className="zai-dot-close" />
-              <span className="zai-dot-minimize" />
-              <span className="zai-dot-maximize" />
-            </div>
-            <span className="text-xs text-gray-500 font-mono">
-              {filename || language}
-            </span>
-          </div>
+          <span className="text-xs text-gray-500 font-mono">
+            {filename || language}
+          </span>
         </div>
         <div
           className="p-4 font-mono text-[13px] leading-relaxed whitespace-pre overflow-x-auto"
@@ -102,35 +90,21 @@ export function CodeBlock({
 
   return (
     <div
-      className={`my-4 rounded-lg overflow-hidden group relative ${isDark ? 'zai-neon-border' : ''}`}
+      className="my-4 rounded-lg overflow-hidden group relative"
       style={{ border: `1px solid ${borderColor}` }}
     >
-      {/* Terminal chrome header — macOS window style */}
       <div
         className="flex items-center justify-between px-4 py-2.5 border-b"
         style={{ background: headerBg, borderColor: borderColor }}
       >
-        <div className="flex items-center gap-3">
-          {/* Traffic light dots */}
-          <div className="zai-terminal-dots">
-            <span className="zai-dot-close" />
-            <span className="zai-dot-minimize" />
-            <span className="zai-dot-maximize" />
-          </div>
-          {/* Language label with cursor blink */}
-          <span
-            className={`text-xs font-mono flex items-center gap-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-          >
-            {filename || language}
-            <span
-              className="zai-cursor-blink inline-block w-[2px] h-[14px] ml-0.5"
-              style={{ background: isDark ? '#7dd3fc' : '#0284c7' }}
-            />
-          </span>
-        </div>
+        <span
+          className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+        >
+          {filename || language}
+        </span>
         <button
           onClick={handleCopy}
-          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors zai-focus-ring ${
+          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
             isDark
               ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
               : 'text-gray-500 hover:text-gray-700 hover:bg-black/5'
@@ -198,7 +172,6 @@ export function InlineCode({ children }: { children: React.ReactNode }) {
 /**
  * Plain code block — for fenced code blocks without a language specifier.
  * Rendered as a monospace scrollable block (not inline code).
- * Includes terminal chrome for visual consistency.
  */
 export function PlainCodeBlock({ children }: { children: string }) {
   const { resolvedTheme } = useTheme();
@@ -212,7 +185,6 @@ export function PlainCodeBlock({ children }: { children: string }) {
   const codeBg = isDark ? '#0f0f1a' : '#fafafa';
   const borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)';
 
-  // Placeholder before mount — always light to avoid flash
   if (!mounted) {
     return (
       <div
@@ -220,14 +192,9 @@ export function PlainCodeBlock({ children }: { children: string }) {
         style={{ border: '1px solid rgba(0,0,0,0.08)' }}
       >
         <div
-          className="flex items-center gap-3 px-4 py-2.5 border-b"
+          className="flex items-center px-4 py-2.5 border-b"
           style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
         >
-          <div className="zai-terminal-dots">
-            <span className="zai-dot-close" />
-            <span className="zai-dot-minimize" />
-            <span className="zai-dot-maximize" />
-          </div>
           <span className="text-xs text-gray-500 font-mono">terminal</span>
         </div>
         <div
@@ -242,29 +209,20 @@ export function PlainCodeBlock({ children }: { children: string }) {
 
   return (
     <div
-      className={`my-4 rounded-lg overflow-hidden ${isDark ? 'zai-neon-border' : ''}`}
+      className="my-4 rounded-lg overflow-hidden"
       style={{ border: `1px solid ${borderColor}` }}
     >
       <div
-        className="flex items-center gap-3 px-4 py-2.5 border-b"
+        className="flex items-center px-4 py-2.5 border-b"
         style={{
           background: isDark ? '#15151f' : '#f0f0f0',
           borderColor: borderColor,
         }}
       >
-        <div className="zai-terminal-dots">
-          <span className="zai-dot-close" />
-          <span className="zai-dot-minimize" />
-          <span className="zai-dot-maximize" />
-        </div>
         <span
-          className={`text-xs font-mono flex items-center gap-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+          className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
         >
           terminal
-          <span
-            className="zai-cursor-blink inline-block w-[2px] h-[14px] ml-0.5"
-            style={{ background: isDark ? '#7dd3fc' : '#0284c7' }}
-          />
         </span>
       </div>
       <div

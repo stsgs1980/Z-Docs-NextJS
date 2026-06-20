@@ -199,24 +199,6 @@
 
 /* ===== ANIMATION KEYFRAMES ===== */
 
-/* Cursor blink — terminal-style blinking cursor */
-@keyframes zai-cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Neon pulse — subtle glow breathing */
-@keyframes zai-neon-pulse {
-  0%, 100% {
-    box-shadow: 0 0 4px rgba(var(--zai-glow-color), 0.2),
-                0 0 12px rgba(var(--zai-glow-color), 0.1);
-  }
-  50% {
-    box-shadow: 0 0 8px rgba(var(--zai-glow-color), 0.3),
-                0 0 20px rgba(var(--zai-glow-color), 0.15);
-  }
-}
-
 /* Skeleton shimmer — loading state */
 @keyframes zai-skeleton-shimmer {
   0% { background-position: -200% 0; }
@@ -235,21 +217,7 @@
   }
 }
 
-/* Dot pulse — status indicator */
-@keyframes zai-dot-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
-}
-
 /* ===== ANIMATION UTILITY CLASSES ===== */
-
-.zai-cursor-blink {
-  animation: zai-cursor-blink 1s step-end infinite;
-}
-
-.zai-neon-pulse {
-  animation: zai-neon-pulse 3s ease-in-out infinite;
-}
 
 .zai-skeleton-shimmer {
   background: linear-gradient(
@@ -268,19 +236,6 @@
 
 /* ===== EFFECT UTILITY CLASSES ===== */
 
-/* Neon border — subtle glow border */
-.zai-neon-border {
-  border: 1px solid rgba(var(--zai-glow-color), 0.25);
-  box-shadow: inset 0 0 8px rgba(var(--zai-glow-color), 0.03),
-              0 0 12px rgba(var(--zai-glow-color), 0.06);
-}
-
-/* Neon glow — text glow effect */
-.zai-neon-glow {
-  text-shadow: 0 0 4px rgba(var(--zai-glow-color), 0.4),
-               0 0 12px rgba(var(--zai-glow-color), 0.2);
-}
-
 /* Card lift — hover interaction */
 .zai-card-lift {
   transition: transform var(--zai-duration-fast) var(--zai-easing-default),
@@ -297,24 +252,6 @@
   outline-offset: 2px;
   border-radius: var(--zai-radius-sm);
 }
-
-/* ===== TERMINAL CHROME — CodeBlock window frame ===== */
-
-/* Traffic light dots */
-.zai-terminal-dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.zai-terminal-dots span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.zai-dot-close { background: #ff5f57; }
-.zai-dot-minimize { background: #febc2e; }
-.zai-dot-maximize { background: #28c840; }
 
 /* ===== GOLDEN SPLIT GRID — docs layout ===== */
 
@@ -536,8 +473,6 @@
 /* ===== REDUCED MOTION — a11y ===== */
 
 @media (prefers-reduced-motion: reduce) {
-  .zai-cursor-blink,
-  .zai-neon-pulse,
   .zai-skeleton-shimmer,
   .zai-fade-up {
     animation: none;
