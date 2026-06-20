@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ChevronDown, ChevronRight, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import type { NavSection } from '@/lib/mdx-utils';
 
 interface SidebarProps {
@@ -10,8 +10,6 @@ interface SidebarProps {
   onNavigate: (slug: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  collapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export default function Sidebar({
@@ -20,18 +18,8 @@ export default function Sidebar({
   onNavigate,
   isOpen,
   onClose,
-  collapsed = false,
-  onToggleCollapse,
 }: SidebarProps) {
-  const [openSections, setOpenSections] = React.useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    for (const section of navigation) {
-      if (section.items.some((i) => i.slug === currentSlug)) {
-        initial.add(section.title);
-      }
-    }
-    return initial;
-  });
+  const [openSections, setOpenSections] = React.useState<Set<string>>(new Set());
 
   const toggleSection = (title: string) => {
     setOpenSections((prev) => {
@@ -97,43 +85,9 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Desktop sidebar — collapsed: thin strip with toggle, expanded: full nav */}
-      <aside
-        className={`hidden xl:flex shrink-0 border-r border-border bg-sidebar h-[calc(100vh-49px)] sticky top-[49px] transition-[width] duration-200 ease-in-out ${
-          collapsed ? 'w-[44px] flex-col items-center' : 'w-[280px]'
-        }`}
-      >
-        {collapsed ? (
-          /* Collapsed: toggle button centered vertically */
-          <div className="flex flex-col items-center pt-3 w-full">
-            <button
-              onClick={onToggleCollapse}
-              className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              title="Expand sidebar"
-              aria-label="Expand sidebar"
-            >
-              <PanelLeftOpen className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          /* Expanded: full navigation + collapse button */
-          <>
-            <div className="flex items-center justify-between px-3 h-[40px] border-b border-border shrink-0">
-              <span className="text-[13px] font-medium text-muted-foreground">
-                Navigation
-              </span>
-              <button
-                onClick={onToggleCollapse}
-                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                title="Collapse sidebar"
-                aria-label="Collapse sidebar"
-              >
-                <PanelLeftClose className="h-4 w-4" />
-              </button>
-            </div>
-            {sidebarContent}
-          </>
-        )}
+      {/* Desktop sidebar — width controlled by docs-golden-grid (280px on xl+) */}
+      <aside className="hidden xl:block shrink-0 border-r border-border bg-sidebar h-[calc(100vh-49px)] sticky top-[49px]">
+        {sidebarContent}
       </aside>
 
       {/* Mobile drawer */}
