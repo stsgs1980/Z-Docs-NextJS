@@ -1,0 +1,53 @@
+---
+title: "Wiki vs Docs"
+section: "Knowledge Paradigms"
+order: 1
+slug: "wiki-vs-docs"
+---
+
+This is a key distinction that is often missed when choosing a platform. Wiki and Docs are not different tools — they are different paradigms for working with information. Understanding this distinction determines which tool and structure you will choose.
+
+## Comparison
+
+| Aspect | Wiki | Docs |
+|--------|------|------|
+| Reading model | Non-linear — jumping by links | Linear — reading top to bottom |
+| Structure | Network — pages are equal | Hierarchical — chapters and sections |
+| Authorship | Collective — anyone can edit | Regulated — author and reviewer |
+| Goal | Connect knowledge | Convey knowledge sequentially |
+| Audience | Team members | Readers (clients, newcomers) |
+| Examples | Wikipedia, Confluence Wiki | ReadTheDocs, MkDocs site |
+
+## Visualization
+
+```mermaid
+graph LR
+    subgraph Wiki
+        W1["Page A"] --> W2["Page B"]
+        W2 --> W3["Page C"]
+        W3 --> W1
+        W1 --> W4["Page D"]
+        W4 --> W2
+    end
+
+    subgraph Docs
+        D1["Chapter 1"] --> D2["Chapter 2"]
+        D2 --> D3["Chapter 3"]
+        D3 --> D4["Chapter 4"]
+    end
+```
+
+Wiki is a network where you can jump in any order. Docs is a book where you read sequentially.
+
+## Notion-Style: Platform Unifies Paradigms
+
+Modern platforms (Notion, Coda, Anytype) combine multiple paradigms in one interface:
+
+| Paradigm | Implementation in Notion |
+|----------|--------------------------|
+| Doc | Page with text, headings, blocks |
+| Wiki | Space with backlinks |
+| Project | Boards, task tracking, kanban |
+| Database | Tables, kanban view, calendar, gallery |
+
+**Which to choose?** If your team **looks for information** by connections (like Wikipedia) — you need a Wiki. If you **teach** people (like a textbook) — you need Docs. Often you need both — then Hub-and-Spoke provides a hybrid.

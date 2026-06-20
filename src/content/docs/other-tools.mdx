@@ -1,0 +1,76 @@
+---
+title: "Other Tools"
+section: "Tools"
+order: 3
+slug: "other-tools"
+---
+
+Beyond MkDocs and GitBook, there are many other documentation tools. Each has its own niche and characteristics.
+
+## Docusaurus
+
+A static generator from Meta (Facebook). Written in React, supports MDX.
+
+- **Pros:** React components in documentation, i18n out of the box, plugins, blog
+- **Cons:** More complex than MkDocs, requires Node.js
+- **Best for:** Open source projects, React teams
+
+## Hugo
+
+The fastest static generator. Written in Go, generates sites in milliseconds.
+
+- **Pros:** Very fast, concise template code, many themes
+- **Cons:** Own template engine (not Jinja), harder to customize
+- **Best for:** Large documentation sites, blogs, personal sites
+
+## Confluence
+
+Corporate Wiki from Atlassian. Integration with Jira, Trello, Bitbucket.
+
+- **Pros:** Atlassian ecosystem integration, templates, permissions, audit log
+- **Cons:** Expensive, slow, limited customization, vendor lock-in
+- **Best for:** Enterprise companies already using Jira
+
+## Notion
+
+A flexible SaaS platform combining Wiki, Docs, and Database.
+
+- **Pros:** Databases, kanban view, calendar, flexibility, beauty
+- **Cons:** No Git, weak offline mode, limited export, service dependency
+- **Best for:** Startups, small teams, cross-functional projects
+
+## ReadTheDocs
+
+Documentation hosting for Open Source projects. Automatically builds and publishes documentation from GitHub.
+
+- **Pros:** Free for OSS, auto-build, versioning, search
+- **Cons:** Only for public repositories (free), limited customization
+- **Best for:** Open source projects
+
+## Jekyll
+
+A static generator in Ruby. Natively supported by GitHub Pages.
+
+- **Pros:** GitHub Pages out of the box, many themes, simplicity
+- **Cons:** Slow build, Ruby dependencies, fewer features than MkDocs
+- **Best for:** Simple projects, blogs, personal sites
+
+## Docsify
+
+Renders Markdown on the fly in the browser. No build step — just open the HTML and see the documentation.
+
+- **Pros:** No build, simplicity, plugins
+- **Cons:** No SEO (JS rendering), slow on large sites, no search without a plugin
+- **Best for:** Quick prototypes, internal documentation
+
+## Summary Table
+
+| Tool | Language | Build Speed | Price | SEO | Best For |
+|------|----------|-------------|-------|-----|----------|
+| Docusaurus | React | Medium | Free | OK | React teams |
+| Hugo | Go | Very fast | Free | OK | Large sites |
+| Confluence | Java | — | Paid | Fail | Enterprise |
+| Notion | — | — | Freemium | Fail | Startups |
+| ReadTheDocs | Python | Medium | Free (OSS) | OK | Open source |
+| Jekyll | Ruby | Slow | Free | OK | Simple projects |
+| Docsify | JS | No build | Free | Fail | Prototypes |

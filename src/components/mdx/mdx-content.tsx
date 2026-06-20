@@ -1,0 +1,144 @@
+import React from 'react';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import { CodeBlock, InlineCode, MermaidDiagram, Callout, Badge } from '@/components/mdx/mdx-components';
+
+// Shared MDX components available in all .mdx files
+const mdxComponents = {
+  // Custom components (usable via JSX in MDX)
+  CodeBlock,
+  Callout,
+  Badge,
+  MermaidDiagram,
+
+  // Override standard markdown elements
+  h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+    const text = String(children).replace(/\*\*/g, '');
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w\sа-яА-ЯёЁ-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    return (
+      <h2
+        id={id}
+        className="text-[30px] font-medium leading-tight text-foreground mb-4 mt-10 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h2>
+    );
+  },
+  h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+    const text = String(children).replace(/\*\*/g, '');
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w\sа-яА-ЯёЁ-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    return (
+      <h3
+        id={id}
+        className="text-[16px] font-semibold leading-snug text-foreground mb-3 mt-8 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h3>
+    );
+  },
+  p: ({ children }: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p className="text-[16px] leading-relaxed text-muted-foreground mb-4">
+      {children}
+    </p>
+  ),
+  strong: ({ children }: React.HTMLAttributes<HTMLElement>) => (
+    <strong className="font-medium text-foreground">{children}</strong>
+  ),
+  em: ({ children }: React.HTMLAttributes<HTMLElement>) => (
+    <em className="italic text-foreground/80">{children}</em>
+  ),
+  ul: ({ children }: React.HTMLAttributes<HTMLUListElement>) => (
+    <ul className="list-disc pl-6 mb-4 space-y-2">{children}</ul>
+  ),
+  ol: ({ children }: React.HTMLAttributes<HTMLOListElement>) => (
+    <ol className="list-decimal pl-6 mb-4 space-y-2">{children}</ol>
+  ),
+  li: ({ children }: React.HTMLAttributes<HTMLLIElement>) => (
+    <li className="text-[16px] leading-relaxed text-muted-foreground">
+      {children}
+    </li>
+  ),
+  table: ({ children }: React.HTMLAttributes<HTMLTableElement>) => (
+    <div className="my-4 overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead className="bg-muted">{children}</thead>
+  ),
+  th: ({ children }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <th className="px-4 py-3 text-left font-medium text-foreground border-b border-border whitespace-nowrap">
+      {children}
+    </th>
+  ),
+  td: ({ children }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <td className="px-4 py-3 text-muted-foreground border-b border-border/50">
+      {children}
+    </td>
+  ),
+  code: ({
+    className,
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLElement> & { inline?: boolean }) => {
+    const match = /language-(\w+)/.exec(className || '');
+    const codeString = String(children).replace(/\n$/, '');
+
+    if (!match) {
+      return <InlineCode>{children}</InlineCode>;
+    }
+
+    // Mermaid diagrams
+    if (match[1] === 'mermaid') {
+      return <MermaidDiagram code={codeString} />;
+    }
+
+    // Fenced code blocks with syntax highlighting
+    return <CodeBlock language={match[1]}>{codeString}</CodeBlock>;
+  },
+  pre: ({ children }: React.HTMLAttributes<HTMLPreElement>) => <>{children}</>,
+  blockquote: ({ children }: React.HTMLAttributes<HTMLQuoteElement>) => (
+    <blockquote className="my-4 pl-4 border-l-2 border-border text-muted-foreground italic">
+      {children}
+    </blockquote>
+  ),
+  a: ({ children, href }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a
+      href={href}
+      className="text-[oklch(0.45_0.15_250)] hover:underline dark:text-[oklch(0.685_0.169_237.323)]"
+      target={href?.startsWith('http') ? '_blank' : undefined}
+      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+    >
+      {children}
+    </a>
+  ),
+  hr: () => <hr className="my-8 border-border" />,
+};
+
+interface MDXContentProps {
+  source: string;
+}
+
+/**
+ * Server component that renders MDX content with all wiki components.
+ * Uses next-mdx-remote/rsc for server-side rendering.
+ */
+export default function MDXContent({ source }: MDXContentProps) {
+  return (
+    <div className="docs-content max-w-none">
+      <MDXRemote source={source} components={mdxComponents} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+    </div>
+  );
+}

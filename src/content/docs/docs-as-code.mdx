@@ -1,0 +1,56 @@
+---
+title: "Docs-as-Code"
+section: "Wiki Architecture Approaches"
+order: 8
+slug: "docs-as-code"
+---
+
+A Wiki stored as Markdown files in a Git repository. Changes go through Pull Requests, reviews, and versioning. Documentation is part of the codebase, with the same process and discipline. This is the approach chosen by technical teams: developers already know Git, and documentation gets the same level of control as code.
+
+## Characteristics
+
+| Aspect | Description |
+|--------|-------------|
+| Structure | File system + Git |
+| Flexibility | Medium — changes via PR |
+| Scalability | High — branches, tags, versions |
+| Maintenance Complexity | Medium — requires a CI/CD pipeline |
+
+## Visualization: Pipeline
+
+```mermaid
+graph LR
+    WRITE["[EDIT] Markdown in /docs/"] --> COMMIT["[PKG] git commit"]
+    COMMIT --> PR["[SYNC] Pull Request"]
+    PR --> REVIEW["[REVIEW] Review"]
+    REVIEW --> MERGE["[OK] Merge"]
+    MERGE --> CI["[GEAR] CI/CD"]
+    CI --> BUILD["[BUILD] mkdocs build --strict"]
+    BUILD --> DEPLOY["[DEPLOY] Deploy to GitHub Pages"]
+```
+
+## Pros
+
+- **Full version control** — `git blame`, `git diff`, `git revert` work for documentation just like for code
+- **CI/CD for documentation** — auto-deploy, linting, link checking
+- **Integration with code** — documentation lives alongside source code in `/docs/`, updated in the same PR
+- **PR review ensures quality** — the tech lead sees both code and documentation in one PR
+- **Free hosting** — GitHub Pages, Netlify, Vercel
+
+## Cons
+
+- **Entry barrier for non-technical participants** — requires Git, Markdown, command line
+- **No WYSIWYG editor** — a product manager cannot "just open and fix"
+- **Harder for product managers and tech writers** without Git skills
+- **Need to set up CI/CD** — without auto-deploy, Docs-as-Code loses its purpose
+
+## Tools
+
+| Tool | Language | Feature |
+|------|----------|---------|
+| MkDocs | Python | Material theme, simplicity, GitHub Pages |
+| Docusaurus | React/MDX | React components in documentation |
+| Hugo | Go | Fastest build |
+| Jekyll | Ruby | Native to GitHub Pages |
+
+**Real example:** The very project you are reading right now is an example of Docs-as-Code. Markdown files in Git, MkDocs for building, GitHub Actions for CI/CD, GitHub Pages for hosting.
