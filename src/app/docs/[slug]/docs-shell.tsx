@@ -116,7 +116,7 @@ export default function DocsShell({
         <main className="min-w-0 flex flex-col">
           <div
             ref={contentRef}
-            className="xl:mx-auto xl:max-w-[840px] px-6 xl:px-10 py-8 xl:py-12"
+            className="px-6 xl:px-10 py-8 xl:py-12"
             style={{ gap: 'var(--fib-3)' }}
           >
             {/* Breadcrumb */}
