@@ -21,7 +21,10 @@ export default function Sidebar({
   onClose,
   canEdit = true,
 }: SidebarProps) {
-  const [openSections, setOpenSections] = React.useState<Set<string>>(new Set());
+  // All sections open by default — user can collapse manually
+  const [openSections, setOpenSections] = React.useState<Set<string>>(
+    () => new Set(navigation.map((s) => s.title))
+  );
   const [deleteTarget, setDeleteTarget] = useState<{ slug: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showNewSection, setShowNewSection] = useState(false);
