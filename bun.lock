@@ -661,7 +661,7 @@
 
     "@upsetjs/venn.js": ["@upsetjs/venn.js@2.0.0", "", { "optionalDependencies": { "d3-selection": "^3.0.0", "d3-transition": "^3.0.1" } }, "sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw=="],
 
-    "@zai/select-element": ["@zai/select-element@github:stsgs1980/SelectElement#10dee42", { "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0" } }, "stsgs1980-SelectElement-10dee42", "sha512-e81aolHmpcOHqsSPeloTNI9qhdTBgEOCOxZ+Wjnyyu0q5KV2Ua4L3YT25/ZDQu/kZqeCaK8VyuaVJNPPePsxDw=="],
+    "@zai/select-element": ["@zai/select-element@github:stsgs1980/SelectElement#88383ad", { "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0" } }, "stsgs1980-SelectElement-88383ad", "sha512-3+gBzSBvYcrQfuJ6ufQWBX7L6ayu03g1DN53cr0/CGLq3q1c1Zjv5uMiSnsAcskWKsBcF5Uo00vHe29Kk7dZXg=="],
 
     "acorn": ["acorn@8.17.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg=="],
 
