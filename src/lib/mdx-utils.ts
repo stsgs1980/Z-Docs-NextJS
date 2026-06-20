@@ -13,6 +13,7 @@ const CONTENT_DIR = path.join(process.cwd(), 'src', 'content', 'docs');
 export interface DocMeta {
   title: string;
   section: string;
+  sectionOrder: number;
   order: number;
   slug: string;
 }
@@ -24,7 +25,8 @@ export interface DocPage {
 
 export interface NavSection {
   title: string;
-  items: { slug: string; title: string }[];
+  order: number;
+  items: { slug: string; title: string; order: number }[];
 }
 
 export interface Heading {
@@ -53,6 +55,7 @@ export function getDocBySlug(slug: string): DocPage {
     meta: {
       title: data.title || slug,
       section: data.section || 'Uncategorized',
+      sectionOrder: data.sectionOrder ?? data['section-order'] ?? 0,
       order: data.order ?? 0,
       slug: data.slug || slug,
     },
@@ -77,26 +80,36 @@ export function getNavigation(): NavSection[] {
   
   // Group by section
   const sectionMap = new Map<string, DocMeta[]>();
+  const sectionOrderMap = new Map<string, number>();
   for (const doc of docs) {
     const section = doc.meta.section;
     if (!sectionMap.has(section)) {
       sectionMap.set(section, []);
     }
     sectionMap.get(section)!.push(doc.meta);
+    // Track the lowest sectionOrder for each section (first doc defines it)
+    if (!sectionOrderMap.has(section) || doc.meta.sectionOrder < sectionOrderMap.get(section)!) {
+      sectionOrderMap.set(section, doc.meta.sectionOrder);
+    }
   }
 
-  // Sort each section's items by order
-  const navSections: NavSection[] = [];
-  for (const [sectionTitle, items] of sectionMap) {
+  // Sort sections by their order, then build nav
+  const sortedSections = [...sectionMap.entries()].sort(
+    (a, b) => (sectionOrderMap.get(a[0]) ?? 0) - (sectionOrderMap.get(b[0]) ?? 0)
+  );
+
+  const navSections: NavSection[] = sortedSections.map(([sectionTitle, items]) => {
     items.sort((a, b) => a.order - b.order);
-    navSections.push({
+    return {
       title: sectionTitle,
+      order: sectionOrderMap.get(sectionTitle) ?? 0,
       items: items.map((item) => ({
         slug: item.slug,
         title: item.title,
+        order: item.order,
       })),
-    });
-  }
+    };
+  });
 
   return navSections;
 }

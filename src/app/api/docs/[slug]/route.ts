@@ -10,6 +10,7 @@ const CONTENT_DIR = path.join(process.cwd(), 'src', 'content', 'docs');
 interface DocBody {
   title: string;
   section: string;
+  sectionOrder?: number;
   order: number;
   slug: string;
   content: string;
@@ -17,9 +18,10 @@ interface DocBody {
 }
 
 function buildMdxFile(data: Omit<DocBody, 'commitMessage'>): string {
+  const sectionOrderLine = data.sectionOrder != null ? `\nsectionOrder: ${data.sectionOrder}` : '';
   return `---
 title: "${data.title.replace(/"/g, '\\"')}"
-section: "${data.section.replace(/"/g, '\\"')}"
+section: "${data.section.replace(/"/g, '\\"')}"${sectionOrderLine}
 order: ${data.order}
 slug: "${data.slug}"
 ---

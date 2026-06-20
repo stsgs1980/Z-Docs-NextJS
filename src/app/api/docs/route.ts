@@ -10,13 +10,15 @@ const CONTENT_DIR = path.join(process.cwd(), 'src', 'content', 'docs');
 function buildMdxFile(data: {
   title: string;
   section: string;
+  sectionOrder?: number;
   order: number;
   slug: string;
   content: string;
 }): string {
+  const sectionOrderLine = data.sectionOrder != null ? `\nsectionOrder: ${data.sectionOrder}` : '';
   return `---
 title: "${data.title.replace(/"/g, '\\"')}"
-section: "${data.section.replace(/"/g, '\\"')}"
+section: "${data.section.replace(/"/g, '\\"')}"${sectionOrderLine}
 order: ${data.order}
 slug: "${data.slug}"
 ---
@@ -50,6 +52,7 @@ export async function GET() {
       slug: file.replace(/\.mdx$/, ''),
       title: data.title || file,
       section: data.section || 'Uncategorized',
+      sectionOrder: data.sectionOrder ?? data['section-order'] ?? 0,
       order: data.order ?? 0,
     };
   });
@@ -93,6 +96,7 @@ export async function POST(request: NextRequest) {
   const mdxContent = buildMdxFile({
     title: body.title,
     section: body.section || 'Uncategorized',
+    sectionOrder: body.sectionOrder,
     order: body.order ?? 0,
     slug,
     content: body.content,
