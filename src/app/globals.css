@@ -441,51 +441,96 @@
 }
 
 /* ===== MDX EDITOR THEME OVERRIDES ===== */
+/* The editor root (._editorRoot_*) sets --basePageBg: white and uses
+   var(--slate-*) which resolve to light palette even in .dark mode,
+   because the MDX editor's own .dark rules don't apply when the class
+   is on <html>. We must use explicit dark color values with !important. */
 
-/* Dark theme: fix MDX editor hard-coded white backgrounds */
 .dark .mdxeditor {
-  --basePageBg: #0f0f1a;
-  --baseBase: var(--slate-1);
-  --baseBgSubtle: var(--slate-2);
-  --baseBg: var(--slate-3);
-  --baseBgHover: var(--slate-4);
-  --baseBgActive: var(--slate-5);
-  color: var(--slate-12);
+  --basePageBg: #0f0f1a !important;
+  --baseBase: #111113 !important;
+  --baseBgSubtle: #18191b !important;
+  --baseBg: #212225 !important;
+  --baseBgHover: #272a2d !important;
+  --baseBgActive: #2e3135 !important;
+  --baseLine: #363a3f !important;
+  --baseBorder: #43484e !important;
+  --baseBorderHover: #5a6169 !important;
+  --baseSolid: #696e77 !important;
+  --baseSolidHover: #777b84 !important;
+  --baseText: #b0b4ba !important;
+  --baseTextContrast: #edeef0 !important;
+  color: #edeef0;
 }
 
-/* Light theme: ensure MDX editor matches app palette */
-.mdxeditor {
-  --basePageBg: #ffffff;
-  --baseBase: var(--slate-1);
-  --baseBgSubtle: var(--slate-2);
-  --baseBg: var(--slate-3);
-  --baseBgHover: var(--slate-4);
-  --baseBgActive: var(--slate-5);
-  color: var(--slate-12);
+/* Dark theme: toolbar background + icon color */
+.dark .mdxeditor [class*="_toolbarRoot_"] {
+  background-color: #212225 !important;
+  border-color: #363a3f !important;
 }
 
-/* MDX editor toolbar: ensure it uses muted bg from app */
-.mdxeditor-toolbar {
-  background-color: var(--muted) !important;
-  border-color: var(--border) !important;
+.dark .mdxeditor [class*="_toolbarRoot_"] svg {
+  color: #edeef0 !important;
 }
 
-/* Dark theme toolbar button fix */
-.dark .mdxeditor-toolbar button,
-.dark .mdxeditor-toolbar [role="separator"] + button {
-  color: var(--slate-12);
+.dark .mdxeditor [class*="_toolbarRoot_"] button {
+  color: #edeef0;
 }
 
 /* Dark theme: code mirror inside editor */
 .dark .mdxeditor .cm-editor {
-  background-color: var(--slate-1);
-  color: var(--slate-12);
+  background-color: #111113 !important;
+  color: #edeef0 !important;
 }
 
 .dark .mdxeditor .cm-gutters {
-  background-color: var(--slate-2);
-  border-color: var(--slate-6);
-  color: var(--slate-11);
+  background-color: #18191b !important;
+  border-color: #363a3f !important;
+  color: #b0b4ba !important;
+}
+
+.dark .mdxeditor .cm-content {
+  color: #edeef0 !important;
+}
+
+/* Dark theme: code block wrapper */
+.dark .mdxeditor [class*="_codeBlockWrapper_"],
+.dark .mdxeditor [class*="_codeMirrorWrapper_"] {
+  background-color: #18191b !important;
+}
+
+/* Dark theme: table in editor */
+.dark .mdxeditor table {
+  border-color: #363a3f !important;
+}
+
+.dark .mdxeditor table th,
+.dark .mdxeditor table td {
+  border-color: #363a3f !important;
+  color: #edeef0;
+}
+
+/* Dark theme: select/dropdown inside toolbar */
+.dark .mdxeditor [class*="_selectContainer_"],
+.dark .mdxeditor [class*="_selectItem_"] {
+  background-color: #18191b !important;
+  color: #edeef0 !important;
+}
+
+/* Dark theme: dialog/popover inside editor */
+.dark .mdxeditor [class*="_dialogContent_"],
+.dark .mdxeditor [class*="_popoverContent_"] {
+  background-color: #18191b !important;
+  color: #edeef0 !important;
+  border-color: #363a3f !important;
+}
+
+/* Dark theme: link dialog inputs */
+.dark .mdxeditor input,
+.dark .mdxeditor [class*="_inputField_"] {
+  background-color: #212225 !important;
+  color: #edeef0 !important;
+  border-color: #43484e !important;
 }
 
 /* ===== REDUCED MOTION — a11y ===== */
