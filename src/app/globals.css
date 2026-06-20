@@ -177,12 +177,6 @@
   --zai-neon-color: #22d3ee;         /* cyan-400 — glow source */
   --zai-glow-color: 125, 211, 252;   /* RGB for rgba() glow */
 
-  /* Glass tokens */
-  --zai-glass-bg: rgba(10, 10, 15, 0.8);
-  --zai-glass-blur: 12px;
-  --zai-glass-border: rgba(255, 255, 255, 0.06);
-  --zai-glass-saturate: 1.2;
-
   /* Shadow tokens */
   --zai-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --zai-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
@@ -196,11 +190,6 @@
   --zai-color-accent-muted: #0369a1; /* sky-700 */
   --zai-neon-color: #0ea5e9;         /* sky-500 */
   --zai-glow-color: 2, 132, 199;
-
-  --zai-glass-bg: rgba(255, 255, 255, 0.8);
-  --zai-glass-blur: 8px;
-  --zai-glass-border: rgba(0, 0, 0, 0.06);
-  --zai-glass-saturate: 1;
 
   --zai-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
   --zai-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -278,15 +267,6 @@
 }
 
 /* ===== EFFECT UTILITY CLASSES ===== */
-
-/* Glass card — frosted glass effect */
-.zai-glass-card {
-  background: var(--zai-glass-bg);
-  backdrop-filter: blur(var(--zai-glass-blur)) saturate(var(--zai-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--zai-glass-blur)) saturate(var(--zai-glass-saturate));
-  border: 1px solid var(--zai-glass-border);
-  border-radius: var(--zai-radius-lg);
-}
 
 /* Neon border — subtle glow border */
 .zai-neon-border {

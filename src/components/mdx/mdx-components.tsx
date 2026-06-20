@@ -363,7 +363,7 @@ export function MermaidDiagram({ code }: { code: string }) {
   return (
     <div
       ref={containerRef}
-      className={`my-4 rounded-lg border p-4 overflow-x-auto ${isDark ? 'zai-glass-card' : 'border-border bg-muted/50'}`}
+      className="my-4 rounded-lg border border-border bg-muted/50 p-4 overflow-x-auto"
     >
       {svg ? (
         <div
