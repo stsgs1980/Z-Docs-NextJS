@@ -440,6 +440,54 @@
   background: rgba(var(--zai-glow-color), 0.25);
 }
 
+/* ===== MDX EDITOR THEME OVERRIDES ===== */
+
+/* Dark theme: fix MDX editor hard-coded white backgrounds */
+.dark .mdxeditor {
+  --basePageBg: #0f0f1a;
+  --baseBase: var(--slate-1);
+  --baseBgSubtle: var(--slate-2);
+  --baseBg: var(--slate-3);
+  --baseBgHover: var(--slate-4);
+  --baseBgActive: var(--slate-5);
+  color: var(--slate-12);
+}
+
+/* Light theme: ensure MDX editor matches app palette */
+.mdxeditor {
+  --basePageBg: #ffffff;
+  --baseBase: var(--slate-1);
+  --baseBgSubtle: var(--slate-2);
+  --baseBg: var(--slate-3);
+  --baseBgHover: var(--slate-4);
+  --baseBgActive: var(--slate-5);
+  color: var(--slate-12);
+}
+
+/* MDX editor toolbar: ensure it uses muted bg from app */
+.mdxeditor-toolbar {
+  background-color: var(--muted) !important;
+  border-color: var(--border) !important;
+}
+
+/* Dark theme toolbar button fix */
+.dark .mdxeditor-toolbar button,
+.dark .mdxeditor-toolbar [role="separator"] + button {
+  color: var(--slate-12);
+}
+
+/* Dark theme: code mirror inside editor */
+.dark .mdxeditor .cm-editor {
+  background-color: var(--slate-1);
+  color: var(--slate-12);
+}
+
+.dark .mdxeditor .cm-gutters {
+  background-color: var(--slate-2);
+  border-color: var(--slate-6);
+  color: var(--slate-11);
+}
+
 /* ===== REDUCED MOTION — a11y ===== */
 
 @media (prefers-reduced-motion: reduce) {
