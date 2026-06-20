@@ -329,6 +329,10 @@
   .docs-golden-grid {
     grid-template-columns: 280px minmax(0, 1.618fr) 220px;
   }
+  /* Collapsed sidebar: thin strip instead of 280px */
+  .docs-golden-grid[data-sidebar="collapsed"] {
+    grid-template-columns: auto minmax(0, 1.618fr) 220px;
+  }
 }
 
 /* Mobile: single column stack */

@@ -39,6 +39,7 @@ export default function DocsShell({
   const [activeHeading, setActiveHeading] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleNavigate = useCallback(
@@ -101,7 +102,10 @@ export default function DocsShell({
           Desktop (xl+): sidebar(280px) + content(1.618fr) + TOC(220px)
           Tablet: content(1.618fr) + TOC(1fr)
           Mobile: single column */}
-      <div className="docs-golden-grid">
+      <div
+        className="docs-golden-grid"
+        data-sidebar={sidebarCollapsed ? 'collapsed' : 'expanded'}
+      >
         {/* Sidebar — grid column 1 on xl+ */}
         <Sidebar
           currentSlug={slug}
@@ -109,6 +113,8 @@ export default function DocsShell({
           onNavigate={handleNavigate}
           isOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
 
         {/* Content — golden section (1.618fr) */}
