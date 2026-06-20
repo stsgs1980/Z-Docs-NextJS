@@ -663,7 +663,7 @@
 
     "@upsetjs/venn.js": ["@upsetjs/venn.js@2.0.0", "", { "optionalDependencies": { "d3-selection": "^3.0.0", "d3-transition": "^3.0.1" } }, "sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw=="],
 
-    "@zai/select-element": ["@zai/select-element@github:stsgs1980/SelectElement#cfd8214", { "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0", "react-syntax-highlighter": ">=15.0.0" } }, "stsgs1980-SelectElement-cfd8214", "sha512-ENqqxm1I6Xj3m3IGdM8cT+67o39VOdxpLC0TxHNabWyVob/W4ds71zTxcfLNIUozDci58bA2ppTzD6u6/je7Tw=="],
+    "@zai/select-element": ["@zai/select-element@github:stsgs1980/SelectElement#c792ea6", { "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0", "react-syntax-highlighter": ">=15.0.0" } }, "stsgs1980-SelectElement-c792ea6", "sha512-y6SkMxHi/NZUaTSnzf+Dz7G9BMXuPU6t+uhqAA1GjdKKVGNQiG/zjfOhPuNp/JhV/y3rWLPjH6Cy1+fc1HB7aA=="],
 
     "acorn": ["acorn@8.17.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg=="],
 
