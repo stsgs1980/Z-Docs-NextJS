@@ -93,8 +93,8 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden xl:block w-[280px] shrink-0 border-r border-border bg-sidebar h-[calc(100vh-49px)] sticky top-[49px]">
+      {/* Desktop sidebar — width controlled by docs-golden-grid (280px on xl+) */}
+      <aside className="hidden xl:block shrink-0 border-r border-border bg-sidebar h-[calc(100vh-49px)] sticky top-[49px]">
         {sidebarContent}
       </aside>
 

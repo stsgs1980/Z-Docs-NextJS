@@ -97,7 +97,12 @@ export default function DocsShell({
         canEdit={canEdit}
       />
 
-      <div className="flex">
+      {/* Golden Split Grid — phi-layout: 1fr 1.618fr proportions
+          Desktop (xl+): sidebar(280px) + content(1.618fr) + TOC(220px)
+          Tablet: content(1.618fr) + TOC(1fr)
+          Mobile: single column */}
+      <div className="docs-golden-grid">
+        {/* Sidebar — grid column 1 on xl+ */}
         <Sidebar
           currentSlug={slug}
           navigation={navigation}
@@ -106,10 +111,12 @@ export default function DocsShell({
           onClose={() => setMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 min-w-0">
+        {/* Content — golden section (1.618fr) */}
+        <main className="min-w-0">
           <div
             ref={contentRef}
             className="mx-auto max-w-[840px] px-6 xl:px-10 py-8 xl:py-12"
+            style={{ gap: 'var(--fib-3)' }}
           >
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-[13px] text-muted-foreground mb-6">
@@ -168,6 +175,7 @@ export default function DocsShell({
           </div>
         </main>
 
+        {/* TOC — grid column 3 on xl+ */}
         <TOC headings={headings} activeId={activeHeading} />
       </div>
 

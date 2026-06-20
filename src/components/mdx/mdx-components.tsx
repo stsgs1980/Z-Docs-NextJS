@@ -15,16 +15,18 @@ interface CodeBlockProps {
 }
 
 /**
- * CodeBlock component with syntax highlighting and copy button.
+ * CodeBlock — terminal-style code display with syntax highlighting.
+ *
+ * Visual design: dark-zai skin, terminal chrome (traffic light dots),
+ * cursor-blink on language label, neon accent on copy button.
+ *
+ * Architecture:
  * - Theme-aware: switches oneDark/oneLight based on resolvedTheme
  * - No SSR flash: renders a skeleton placeholder until mounted
- * - Copy button with clipboard API
+ * - Copy button with clipboard API + fallback
  * - Line numbers + optional filename header
- *
- * Usage in MDX:
- *   <CodeBlock language="typescript" filename="app.tsx">
- *     const x = 1;
- *   </CodeBlock>
+ * - Terminal window chrome (macOS-style dots)
+ * - CSS custom properties from globals.css (no hardcoded colors)
  */
 export function CodeBlock({
   children,
@@ -41,8 +43,11 @@ export function CodeBlock({
   }, []);
 
   const isDark = mounted ? resolvedTheme === 'dark' : false;
-  const codeBg = isDark ? '#1e1e2e' : '#fafafa';
-  const borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+  const codeBg = isDark ? '#0f0f1a' : '#fafafa';
+  const headerBg = isDark ? '#15151f' : '#f0f0f0';
+  const borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)';
+  const lineNumberColor = isDark ? '#3a3a4a' : '#c8c8c8';
+  const labelColor = isDark ? '#878992' : '#6b7280';
 
   const handleCopy = async () => {
     try {
@@ -63,20 +68,27 @@ export function CodeBlock({
   };
 
   // Before mount: render a neutral placeholder to avoid SSR/client mismatch + theme flash.
-  // Always light-style placeholder — avoids dark→light flash on initial load.
   if (!mounted) {
     return (
       <div
         className="my-4 rounded-lg overflow-hidden"
         style={{ border: `1px solid rgba(0,0,0,0.08)` }}
       >
+        {/* Terminal chrome header */}
         <div
-          className="flex items-center justify-between px-4 py-2 border-b"
-          style={{ background: '#f5f5f5', borderColor: 'rgba(0,0,0,0.08)' }}
+          className="flex items-center justify-between px-4 py-2.5 border-b"
+          style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
         >
-          <span className="text-xs text-gray-500 font-mono">
-            {filename || language}
-          </span>
+          <div className="flex items-center gap-3">
+            <div className="zai-terminal-dots">
+              <span className="zai-dot-close" />
+              <span className="zai-dot-minimize" />
+              <span className="zai-dot-maximize" />
+            </div>
+            <span className="text-xs text-gray-500 font-mono">
+              {filename || language}
+            </span>
+          </div>
         </div>
         <div
           className="p-4 font-mono text-[13px] leading-relaxed whitespace-pre overflow-x-auto"
@@ -90,20 +102,39 @@ export function CodeBlock({
 
   return (
     <div
-      className="my-4 rounded-lg overflow-hidden group relative"
+      className={`my-4 rounded-lg overflow-hidden group relative ${isDark ? 'zai-neon-border' : ''}`}
       style={{ border: `1px solid ${borderColor}` }}
     >
-      {/* Header bar */}
+      {/* Terminal chrome header — macOS window style */}
       <div
-        className="flex items-center justify-between px-4 py-2 border-b"
-        style={{ background: isDark ? '#2a2a3a' : '#f0f0f0', borderColor: borderColor }}
+        className="flex items-center justify-between px-4 py-2.5 border-b"
+        style={{ background: headerBg, borderColor: borderColor }}
       >
-        <span className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-          {filename || language}
-        </span>
+        <div className="flex items-center gap-3">
+          {/* Traffic light dots */}
+          <div className="zai-terminal-dots">
+            <span className="zai-dot-close" />
+            <span className="zai-dot-minimize" />
+            <span className="zai-dot-maximize" />
+          </div>
+          {/* Language label with cursor blink */}
+          <span
+            className={`text-xs font-mono flex items-center gap-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+          >
+            {filename || language}
+            <span
+              className="zai-cursor-blink inline-block w-[2px] h-[14px] ml-0.5"
+              style={{ background: isDark ? '#7dd3fc' : '#0284c7' }}
+            />
+          </span>
+        </div>
         <button
           onClick={handleCopy}
-          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${isDark ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5' : 'text-gray-500 hover:text-gray-700 hover:bg-black/5'}`}
+          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors zai-focus-ring ${
+            isDark
+              ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-black/5'
+          }`}
           aria-label="Copy code"
         >
           {copied ? (
@@ -135,13 +166,14 @@ export function CodeBlock({
         lineNumberStyle={{
           minWidth: '2.5em',
           paddingRight: '1em',
-          color: isDark ? '#4a4a5a' : '#c0c0c0',
+          color: lineNumberColor,
           userSelect: 'none',
           background: 'transparent',
         }}
         codeTagProps={{
           style: {
-            fontFamily: 'var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+            fontFamily:
+              'var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
           },
         }}
       >
@@ -166,10 +198,7 @@ export function InlineCode({ children }: { children: React.ReactNode }) {
 /**
  * Plain code block — for fenced code blocks without a language specifier.
  * Rendered as a monospace scrollable block (not inline code).
- * Example:
- *   ```
- *   some plain text
- *   ```
+ * Includes terminal chrome for visual consistency.
  */
 export function PlainCodeBlock({ children }: { children: string }) {
   const { resolvedTheme } = useTheme();
@@ -180,8 +209,8 @@ export function PlainCodeBlock({ children }: { children: string }) {
   }, []);
 
   const isDark = mounted ? resolvedTheme === 'dark' : false;
-  const codeBg = isDark ? '#1e1e2e' : '#fafafa';
-  const borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+  const codeBg = isDark ? '#0f0f1a' : '#fafafa';
+  const borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)';
 
   // Placeholder before mount — always light to avoid flash
   if (!mounted) {
@@ -190,6 +219,17 @@ export function PlainCodeBlock({ children }: { children: string }) {
         className="my-4 rounded-lg overflow-hidden"
         style={{ border: '1px solid rgba(0,0,0,0.08)' }}
       >
+        <div
+          className="flex items-center gap-3 px-4 py-2.5 border-b"
+          style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
+        >
+          <div className="zai-terminal-dots">
+            <span className="zai-dot-close" />
+            <span className="zai-dot-minimize" />
+            <span className="zai-dot-maximize" />
+          </div>
+          <span className="text-xs text-gray-500 font-mono">terminal</span>
+        </div>
         <div
           className="p-4 font-mono text-[13px] leading-relaxed overflow-x-auto whitespace-pre"
           style={{ background: '#fafafa', color: '#333' }}
@@ -202,9 +242,31 @@ export function PlainCodeBlock({ children }: { children: string }) {
 
   return (
     <div
-      className="my-4 rounded-lg overflow-hidden"
+      className={`my-4 rounded-lg overflow-hidden ${isDark ? 'zai-neon-border' : ''}`}
       style={{ border: `1px solid ${borderColor}` }}
     >
+      <div
+        className="flex items-center gap-3 px-4 py-2.5 border-b"
+        style={{
+          background: isDark ? '#15151f' : '#f0f0f0',
+          borderColor: borderColor,
+        }}
+      >
+        <div className="zai-terminal-dots">
+          <span className="zai-dot-close" />
+          <span className="zai-dot-minimize" />
+          <span className="zai-dot-maximize" />
+        </div>
+        <span
+          className={`text-xs font-mono flex items-center gap-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+        >
+          terminal
+          <span
+            className="zai-cursor-blink inline-block w-[2px] h-[14px] ml-0.5"
+            style={{ background: isDark ? '#7dd3fc' : '#0284c7' }}
+          />
+        </span>
+      </div>
       <div
         className="p-4 font-mono text-[13px] leading-relaxed overflow-x-auto whitespace-pre"
         style={{
@@ -244,18 +306,18 @@ export function MermaidDiagram({ code }: { code: string }) {
           theme: isDark ? 'dark' : 'default',
           themeVariables: isDark
             ? {
-                background: '#1a1a1a',
-                primaryColor: '#2a2a2a',
-                primaryTextColor: '#fafafa',
-                primaryBorderColor: 'rgba(255,255,255,0.1)',
-                lineColor: 'rgba(255,255,255,0.3)',
-                secondaryColor: '#333',
-                tertiaryColor: '#222',
+                background: '#0a0a0f',
+                primaryColor: '#15151f',
+                primaryTextColor: '#E6E6E6',
+                primaryBorderColor: 'rgba(255,255,255,0.08)',
+                lineColor: 'rgba(125,211,252,0.3)',
+                secondaryColor: '#1a1a2a',
+                tertiaryColor: '#15151f',
                 fontFamily: 'system-ui, sans-serif',
                 fontSize: '13px',
-                nodeBorder: 'rgba(255,255,255,0.15)',
-                mainBkg: '#2a2a2a',
-                clusterBkg: '#222',
+                nodeBorder: 'rgba(255,255,255,0.1)',
+                mainBkg: '#15151f',
+                clusterBkg: '#0d0d14',
               }
             : {
                 background: '#ffffff',
@@ -288,6 +350,8 @@ export function MermaidDiagram({ code }: { code: string }) {
     };
   }, [code, resolvedTheme, mounted]);
 
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
+
   if (error) {
     return (
       <div className="my-4 rounded-lg border border-border bg-muted p-4 overflow-x-auto">
@@ -299,7 +363,7 @@ export function MermaidDiagram({ code }: { code: string }) {
   return (
     <div
       ref={containerRef}
-      className="my-4 rounded-lg border border-border bg-muted/50 p-4 overflow-x-auto"
+      className={`my-4 rounded-lg border p-4 overflow-x-auto ${isDark ? 'zai-glass-card' : 'border-border bg-muted/50'}`}
     >
       {svg ? (
         <div

@@ -12,7 +12,8 @@ export default function TOC({ headings, activeId }: TOCProps) {
   if (headings.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-[280px] shrink-0 h-[calc(100vh-49px)] sticky top-[49px]">
+    /* TOC — width controlled by docs-golden-grid (220px on xl+) */
+    <aside className="hidden xl:block shrink-0 h-[calc(100vh-49px)] sticky top-[49px]">
       <nav className="py-4 pl-6">
         <h4 className="text-[14px] font-medium text-muted-foreground mb-3 px-2">On this page</h4>
         <ul className="space-y-1 border-l border-border">
@@ -31,7 +32,7 @@ export default function TOC({ headings, activeId }: TOCProps) {
                   heading.level === 3 ? 'pl-8' : 'pl-4'
                 } ${
                   activeId === heading.id
-                    ? 'text-[oklch(0.45_0.15_250)] font-medium border-l-2 border-[oklch(0.45_0.15_250)] -ml-px dark:text-[oklch(0.685_0.169_237.323)] dark:border-[oklch(0.685_0.169_237.323)]'
+                    ? 'text-[var(--zai-color-accent)] font-medium border-l-2 border-[var(--zai-color-accent)] -ml-px'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
