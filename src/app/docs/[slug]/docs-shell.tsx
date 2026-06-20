@@ -135,8 +135,8 @@ export default function DocsShell({
             {renderedContent}
           </div>
 
-          {/* Navigation — pushed to bottom of main via mt-auto */}
-          <div className="xl:mx-auto xl:max-w-[840px] px-6 xl:px-10 py-6 border-t border-border mt-auto">
+          {/* Navigation — full width of main, pushed to bottom via mt-auto */}
+          <div className="px-6 xl:px-10 py-6 border-t border-border mt-auto">
             <div className="grid grid-cols-2 gap-4">
               {adjacent.prev ? (
                 <button
