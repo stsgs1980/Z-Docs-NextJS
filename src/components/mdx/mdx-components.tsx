@@ -5,7 +5,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from 'next-themes';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy, Expand, Shrink } from 'lucide-react';
 
 interface CodeBlockProps {
   children: string;
@@ -33,6 +33,7 @@ export function CodeBlock({
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -89,22 +90,60 @@ export function CodeBlock({
     );
   }
 
-  return (
+  // Shared syntax highlighter props
+  const highlighterProps = {
+    style: (isDark ? oneDark : oneLight) as object,
+    language,
+    PreTag: 'div' as const,
+    showLineNumbers,
+    customStyle: {
+      margin: 0,
+      borderRadius: 0,
+      background: codeBg,
+      fontSize: expanded ? '15px' : '13px',
+      padding: expanded ? '24px' : '16px',
+      border: 'none',
+    },
+    lineNumberStyle: {
+      minWidth: '2.5em',
+      paddingRight: '1em',
+      color: lineNumberColor,
+      userSelect: 'none' as const,
+      background: 'transparent',
+    },
+    codeTagProps: {
+      style: {
+        fontFamily:
+          'var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+      },
+    },
+  };
+
+  const headerBar = (
     <div
-      className="my-4 rounded-lg overflow-hidden group relative"
-      style={{ border: `1px solid ${borderColor}` }}
+      className="flex items-center justify-between px-4 py-2.5 border-b shrink-0"
+      style={{ background: headerBg, borderColor: borderColor }}
     >
-      <div
-        className="flex items-center justify-between px-4 py-2.5 border-b"
-        style={{ background: headerBg, borderColor: borderColor }}
+      <span
+        className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
       >
-        <span
-          className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-        >
-          {filename || language}
-        </span>
+        {filename || language}
+      </span>
+      <div className="flex items-center gap-1">
         <button
-          onClick={handleCopy}
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
+          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
+            isDark
+              ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-black/5'
+          }`}
+          aria-label={expanded ? 'Collapse code' : 'Expand code'}
+          title={expanded ? 'Свернуть' : 'Развернуть'}
+        >
+          {expanded ? <Shrink className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); handleCopy(); }}
           className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
             isDark
               ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
@@ -125,33 +164,42 @@ export function CodeBlock({
           )}
         </button>
       </div>
-      <SyntaxHighlighter
-        style={isDark ? oneDark : oneLight}
-        language={language}
-        PreTag="div"
-        showLineNumbers={showLineNumbers}
-        customStyle={{
-          margin: 0,
-          borderRadius: 0,
-          background: codeBg,
-          fontSize: '13px',
-          padding: '16px',
-          border: 'none',
-        }}
-        lineNumberStyle={{
-          minWidth: '2.5em',
-          paddingRight: '1em',
-          color: lineNumberColor,
-          userSelect: 'none',
-          background: 'transparent',
-        }}
-        codeTagProps={{
-          style: {
-            fontFamily:
-              'var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
-          },
-        }}
+    </div>
+  );
+
+  // Expanded: fullscreen overlay
+  if (expanded) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex flex-col"
+        style={{ background: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}
+        onClick={() => setExpanded(false)}
       >
+        <div
+          className="mx-auto my-8 w-full max-w-6xl flex flex-col rounded-lg overflow-hidden shadow-2xl"
+          style={{ border: `1px solid ${borderColor}`, maxHeight: 'calc(100vh - 4rem)' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {headerBar}
+          <div className="overflow-auto flex-1">
+            <SyntaxHighlighter {...highlighterProps}>
+              {children.trim()}
+            </SyntaxHighlighter>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="my-4 rounded-lg overflow-hidden group relative cursor-pointer"
+      style={{ border: `1px solid ${borderColor}` }}
+      onClick={() => setExpanded(true)}
+      title="Нажмите для увеличения"
+    >
+      {headerBar}
+      <SyntaxHighlighter {...highlighterProps}>
         {children.trim()}
       </SyntaxHighlighter>
     </div>
@@ -177,6 +225,7 @@ export function InlineCode({ children }: { children: React.ReactNode }) {
 export function PlainCodeBlock({ children }: { children: string }) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -208,33 +257,80 @@ export function PlainCodeBlock({ children }: { children: string }) {
     );
   }
 
+  const plainHeader = (onClickExpand?: (e: React.MouseEvent) => void) => (
+    <div
+      className="flex items-center justify-between px-4 py-2.5 border-b shrink-0"
+      style={{
+        background: isDark ? '#15151f' : '#f0f0f0',
+        borderColor: borderColor,
+      }}
+    >
+      <span
+        className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+      >
+        terminal
+      </span>
+      {onClickExpand && (
+        <button
+          onClick={onClickExpand}
+          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
+            isDark
+              ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-black/5'
+          }`}
+          aria-label={expanded ? 'Collapse code' : 'Expand code'}
+          title={expanded ? 'Свернуть' : 'Развернуть'}
+        >
+          {expanded ? <Shrink className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}
+        </button>
+      )}
+    </div>
+  );
+
+  const plainContent = (
+    <div
+      className="font-mono leading-relaxed overflow-x-auto whitespace-pre"
+      style={{
+        background: codeBg,
+        color: isDark ? '#e5e5e5' : '#333',
+        padding: expanded ? '24px' : '16px',
+        fontSize: expanded ? '15px' : '13px',
+      }}
+    >
+      {children.trim()}
+    </div>
+  );
+
+  if (expanded) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex flex-col"
+        style={{ background: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}
+        onClick={() => setExpanded(false)}
+      >
+        <div
+          className="mx-auto my-8 w-full max-w-6xl flex flex-col rounded-lg overflow-hidden shadow-2xl"
+          style={{ border: `1px solid ${borderColor}`, maxHeight: 'calc(100vh - 4rem)' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {plainHeader((e) => { e.stopPropagation(); setExpanded(false); })}
+          <div className="overflow-auto flex-1">
+            {plainContent}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="my-4 rounded-lg overflow-hidden"
+      className="my-4 rounded-lg overflow-hidden cursor-pointer"
       style={{ border: `1px solid ${borderColor}` }}
+      onClick={() => setExpanded(true)}
+      title="Нажмите для увеличения"
     >
-      <div
-        className="flex items-center px-4 py-2.5 border-b"
-        style={{
-          background: isDark ? '#15151f' : '#f0f0f0',
-          borderColor: borderColor,
-        }}
-      >
-        <span
-          className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-        >
-          terminal
-        </span>
-      </div>
-      <div
-        className="p-4 font-mono text-[13px] leading-relaxed overflow-x-auto whitespace-pre"
-        style={{
-          background: codeBg,
-          color: isDark ? '#e5e5e5' : '#333',
-        }}
-      >
-        {children.trim()}
-      </div>
+      {plainHeader((e) => { e.stopPropagation(); setExpanded(true); })}
+      {plainContent}
     </div>
   );
 }
