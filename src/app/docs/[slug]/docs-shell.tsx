@@ -10,6 +10,8 @@ import SearchDialog from '@/components/docs/search-dialog';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { NavSection, Heading } from '@/lib/mdx-utils';
 
+const WIKI_SECTION = 'О Sts Wiki';
+
 interface AdjacentPages {
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
@@ -76,6 +78,14 @@ export default function DocsShell({
     };
   }, [headings]);
 
+  const isWikiTab = section === WIKI_SECTION;
+
+  // Filter navigation: wiki tab shows only "О Sts Wiki" section,
+  // docs tab shows everything except "О Sts Wiki"
+  const filteredNav = isWikiTab
+    ? navigation.filter((s) => s.title === WIKI_SECTION)
+    : navigation.filter((s) => s.title !== WIKI_SECTION);
+
   // Cmd+K shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -106,7 +116,7 @@ export default function DocsShell({
         {/* Sidebar — grid column 1 on xl+ */}
         <Sidebar
           currentSlug={slug}
-          navigation={navigation}
+          navigation={filteredNav}
           onNavigate={handleNavigate}
           isOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
@@ -187,7 +197,7 @@ export default function DocsShell({
         open={searchOpen}
         onClose={() => setSearchOpen(false)}
         onNavigate={handleNavigate}
-        navigation={navigation}
+        navigation={filteredNav}
       />
     </div>
   );
