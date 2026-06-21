@@ -343,6 +343,7 @@ export function MermaidDiagram({ code }: { code: string }) {
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
@@ -415,21 +416,48 @@ export function MermaidDiagram({ code }: { code: string }) {
     );
   }
 
+  const diagramContent = svg ? (
+    <div
+      dangerouslySetInnerHTML={{ __html: svg }}
+      className="[&>svg]:max-w-full"
+      style={expanded ? { transform: 'scale(1.3)', transformOrigin: 'center center' } : undefined}
+    />
+  ) : (
+    <div className="flex items-center justify-center py-8">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground/60" />
+    </div>
+  );
+
+  // Expanded: fullscreen overlay
+  if (expanded && svg) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        style={{ background: isDark ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.5)' }}
+        onClick={() => setExpanded(false)}
+      >
+        <div
+          className="rounded-lg border border-border bg-background p-8 overflow-auto max-w-[90vw] max-h-[90vh]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            dangerouslySetInnerHTML={{ __html: svg }}
+            className="[&>svg]:max-w-none [&>svg]:h-auto"
+            style={{ minWidth: '600px' }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
-      className="my-4 rounded-lg border border-border bg-muted/50 p-4 overflow-auto"
+      className="my-4 rounded-lg border border-border bg-muted/50 p-4 overflow-auto cursor-pointer hover:border-ring/50 transition-colors"
+      onClick={() => svg && setExpanded(true)}
+      title="Нажмите для увеличения"
     >
-      {svg ? (
-        <div
-          dangerouslySetInnerHTML={{ __html: svg }}
-          className="[&>svg]:max-w-full"
-        />
-      ) : (
-        <div className="flex items-center justify-center py-8">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground/60" />
-        </div>
-      )}
+      {diagramContent}
     </div>
   );
 }
