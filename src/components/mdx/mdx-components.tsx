@@ -63,24 +63,25 @@ export function CodeBlock({
     }
   };
 
-  // Before mount: render a neutral placeholder to avoid SSR/client mismatch + theme flash.
+  // Before mount: render a theme-aware placeholder using CSS custom properties
+  // to avoid SSR/client mismatch + white flash in dark mode.
   if (!mounted) {
     return (
       <div
         className="my-4 rounded-lg overflow-hidden"
-        style={{ border: `1px solid rgba(0,0,0,0.08)` }}
+        style={{ border: '1px solid var(--code-border)' }}
       >
         <div
           className="flex items-center justify-between px-4 py-2.5 border-b"
-          style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
+          style={{ background: 'var(--code-header-bg)', borderColor: 'var(--code-border)' }}
         >
-          <span className="text-xs text-gray-500 font-mono">
+          <span className="text-xs font-mono" style={{ color: 'var(--muted-foreground)' }}>
             {filename || language}
           </span>
         </div>
         <div
           className="p-4 font-mono text-[13px] leading-relaxed whitespace-pre overflow-x-auto"
-          style={{ background: '#fafafa', color: '#333' }}
+          style={{ background: 'var(--code-bg)', color: 'var(--foreground)' }}
         >
           {children.trim()}
         </div>
@@ -189,17 +190,17 @@ export function PlainCodeBlock({ children }: { children: string }) {
     return (
       <div
         className="my-4 rounded-lg overflow-hidden"
-        style={{ border: '1px solid rgba(0,0,0,0.08)' }}
+        style={{ border: '1px solid var(--code-border)' }}
       >
         <div
           className="flex items-center px-4 py-2.5 border-b"
-          style={{ background: '#f0f0f0', borderColor: 'rgba(0,0,0,0.08)' }}
+          style={{ background: 'var(--code-header-bg)', borderColor: 'var(--code-border)' }}
         >
-          <span className="text-xs text-gray-500 font-mono">terminal</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--muted-foreground)' }}>terminal</span>
         </div>
         <div
           className="p-4 font-mono text-[13px] leading-relaxed overflow-x-auto whitespace-pre"
-          style={{ background: '#fafafa', color: '#333' }}
+          style={{ background: 'var(--code-bg)', color: 'var(--foreground)' }}
         >
           {children.trim()}
         </div>
