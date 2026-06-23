@@ -159,7 +159,7 @@ export default function DocsShell({
             <div className="grid grid-cols-2 gap-4">
               {adjacent.prev ? (
                 <button
-                  onClick={() => handleNavigate(adjacent.prev.slug)}
+                  onClick={() => handleNavigate(adjacent.prev!.slug)}
                   className="group flex items-start gap-2 p-4 rounded-lg border border-border hover:border-ring transition-colors text-left hover:bg-muted/50"
                 >
                   <ChevronLeft className="h-4 w-4 mt-0.5 text-muted-foreground group-hover:text-foreground shrink-0" />
@@ -177,7 +177,7 @@ export default function DocsShell({
               )}
               {adjacent.next ? (
                 <button
-                  onClick={() => handleNavigate(adjacent.next.slug)}
+                  onClick={() => handleNavigate(adjacent.next!.slug)}
                   className="group flex items-start gap-2 p-4 rounded-lg border border-border hover:border-ring transition-colors text-left justify-end hover:bg-muted/50"
                 >
                   <div className="text-right">

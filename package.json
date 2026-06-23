@@ -17,7 +17,6 @@
     "@radix-ui/react-scroll-area": "^1.2.9",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@zai/select-element": "github:stsgs1980/SelectElement",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "github-slugger": "^2.0.0",
@@ -32,7 +31,6 @@
     "react-syntax-highlighter": "^16.1.1",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
-    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7"
   },

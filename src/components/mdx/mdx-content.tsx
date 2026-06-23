@@ -185,7 +185,7 @@ function buildMdxComponents(validSlugs: string[]) {
         // Language-less fenced code block: the code component rendered InlineCode,
         // but inside <pre> it's a block-level element -- upgrade to PlainCodeBlock.
         if (children.type === InlineCode) {
-          const text = String(children.props.children).replace(/\n$/, '');
+          const text = String((children.props as { children: React.ReactNode }).children).replace(/\n$/, '');
           return <PlainCodeBlock>{text}</PlainCodeBlock>;
         }
         // CodeBlock or MermaidDiagram -- just unwrap from the extra <pre>
