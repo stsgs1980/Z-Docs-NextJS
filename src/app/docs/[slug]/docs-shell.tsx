@@ -30,6 +30,32 @@ interface DocsShellProps {
   build?: number;
 }
 
+/**
+ * Hook encapsulating search dialog and mobile menu state + Cmd+K shortcut.
+ */
+function useDocsShellUI() {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  return {
+    searchOpen,
+    setSearchOpen,
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  };
+}
+
 export default function DocsShell({
   slug,
   title,
@@ -44,17 +70,16 @@ export default function DocsShell({
 }: DocsShellProps) {
   const router = useRouter();
   const [activeHeading, setActiveHeading] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { searchOpen, setSearchOpen, mobileMenuOpen, setMobileMenuOpen } = useDocsShellUI();
 
   const handleNavigate = useCallback(
     (targetSlug: string) => {
       router.push(`/docs/${targetSlug}/`);
       setMobileMenuOpen(false);
     },
-    [router]
+    [router, setMobileMenuOpen]
   );
 
   // Track active heading on scroll
@@ -90,18 +115,6 @@ export default function DocsShell({
   const filteredNav = isWikiTab
     ? navigation.filter((s) => s.title === WIKI_SECTION)
     : navigation.filter((s) => s.title !== WIKI_SECTION);
-
-  // Cmd+K shortcut
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setSearchOpen(true);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // Scroll-to-top visibility
   useEffect(() => {

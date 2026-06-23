@@ -3,11 +3,50 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 
+const DARK_THEME_VARS = {
+  background: '#0a0a0f',
+  primaryColor: '#1e1e30',
+  primaryTextColor: '#E6E6E6',
+  primaryBorderColor: 'rgba(125,211,252,0.35)',
+  lineColor: 'rgba(125,211,252,0.5)',
+  secondaryColor: '#1a1a2a',
+  tertiaryColor: '#15151f',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '13px',
+  nodeBorder: 'rgba(125,211,252,0.3)',
+  mainBkg: '#1e1e30',
+  clusterBkg: '#0d0d14',
+};
+
+const LIGHT_THEME_VARS = {
+  background: '#ffffff',
+  primaryColor: '#dbeafe',
+  primaryTextColor: '#1e293b',
+  primaryBorderColor: '#93c5fd',
+  lineColor: '#64748b',
+  secondaryColor: '#e0e7ff',
+  tertiaryColor: '#f8fafc',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '13px',
+  nodeBorder: '#93c5fd',
+  mainBkg: '#dbeafe',
+  clusterBkg: '#f0f9ff',
+  edgeLabelBackground: '#ffffff',
+};
+
+function getMermaidThemeConfig(isDark: boolean) {
+  return {
+    startOnLoad: false,
+    theme: isDark ? 'dark' as const : 'default' as const,
+    themeVariables: isDark ? DARK_THEME_VARS : LIGHT_THEME_VARS,
+  };
+}
+
 /**
- * Mermaid diagram component
+ * Hook that renders a Mermaid diagram and returns the SVG output.
+ * Encapsulates mount tracking, async rendering, and error state.
  */
-export function MermaidDiagram({ code }: { code: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function useMermaidRender(code: string) {
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -24,40 +63,7 @@ export function MermaidDiagram({ code }: { code: string }) {
       try {
         const mermaid = (await import('mermaid')).default;
         const isDark = resolvedTheme === 'dark';
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: isDark ? 'dark' : 'default',
-          themeVariables: isDark
-            ? {
-                background: '#0a0a0f',
-                primaryColor: '#1e1e30',
-                primaryTextColor: '#E6E6E6',
-                primaryBorderColor: 'rgba(125,211,252,0.35)',
-                lineColor: 'rgba(125,211,252,0.5)',
-                secondaryColor: '#1a1a2a',
-                tertiaryColor: '#15151f',
-                fontFamily: 'system-ui, sans-serif',
-                fontSize: '13px',
-                nodeBorder: 'rgba(125,211,252,0.3)',
-                mainBkg: '#1e1e30',
-                clusterBkg: '#0d0d14',
-              }
-            : {
-                background: '#ffffff',
-                primaryColor: '#dbeafe',
-                primaryTextColor: '#1e293b',
-                primaryBorderColor: '#93c5fd',
-                lineColor: '#64748b',
-                secondaryColor: '#e0e7ff',
-                tertiaryColor: '#f8fafc',
-                fontFamily: 'system-ui, sans-serif',
-                fontSize: '13px',
-                nodeBorder: '#93c5fd',
-                mainBkg: '#dbeafe',
-                clusterBkg: '#f0f9ff',
-                edgeLabelBackground: '#ffffff',
-              },
-        });
+        mermaid.initialize(getMermaidThemeConfig(isDark));
         const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
         const { svg: renderedSvg } = await mermaid.render(id, code.trim());
         if (!cancelled) {
@@ -69,12 +75,18 @@ export function MermaidDiagram({ code }: { code: string }) {
       }
     };
     renderDiagram();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [code, resolvedTheme, mounted]);
 
-  const isDark = mounted ? resolvedTheme === 'dark' : false;
+  return { svg, error };
+}
+
+/**
+ * Mermaid diagram component
+ */
+export function MermaidDiagram({ code }: { code: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { svg, error } = useMermaidRender(code);
 
   if (error) {
     return (
