@@ -1,36 +1,12 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  MDXEditor,
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  thematicBreakPlugin,
-  markdownShortcutPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  tablePlugin,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  diffSourcePlugin,
-  toolbarPlugin,
-  BoldItalicUnderlineToggles,
-  StrikeThroughSupSubToggles,
-  ListsToggle,
-  BlockTypeSelect,
-  CreateLink,
-  InsertTable,
-  InsertThematicBreak,
-  InsertCodeBlock,
-  DiffSourceToggleWrapper,
-  UndoRedo,
-  Separator,
-} from '@mdxeditor/editor';
-import '@mdxeditor/editor/style.css';
 import { Upload, FileText, ArrowLeft } from 'lucide-react';
-import { slugify } from '@/lib/slugify';
+import { MDXEditor } from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
+import { getEditorPlugins } from '@/components/editor/mdx-editor-config';
+import { useNewDoc } from './use-new-doc';
 
 export default function NewDocPage() {
   return (
@@ -44,111 +20,27 @@ function NewDocPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [title, setTitle] = useState('');
-  const [section, setSection] = useState(searchParams.get('section') || '');
-  const [slug, setSlug] = useState('');
-  const [sectionOrder, setSectionOrder] = useState(searchParams.get('sectionOrder') || '');
-  const [order, setOrder] = useState('0');
-  const [content, setContent] = useState('# Новая страница\n\nНачните писать здесь...');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [uploading, setUploading] = useState(false);
-
-  // Auto-generate slug from title
-  const handleTitleChange = (val: string) => {
-    setTitle(val);
-    setSlug(slugify(val));
-  };
-
-  const handleSave = useCallback(async () => {
-    if (!title || !slug) {
-      setError('Заголовок и slug обязательны');
-      return;
-    }
-
-    setSaving(true);
-    setError('');
-
-    try {
-      const res = await fetch('/api/docs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          section: section || 'Uncategorized',
-          sectionOrder: sectionOrder ? parseInt(sectionOrder) : undefined,
-          order: order ? parseInt(order) : 0,
-          slug,
-          content,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Create failed');
-      }
-
-      router.push(`/docs/${data.slug}`);
-      router.refresh();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Ошибка создания');
-    } finally {
-      setSaving(false);
-    }
-  }, [title, slug, section, sectionOrder, order, content, router]);
-
-  // File upload
-  const handleFileUpload = useCallback(
-    async (files: FileList | null) => {
-      if (!files || files.length === 0) return;
-      setUploading(true);
-      setError('');
-
-      const formData = new FormData();
-      formData.append('section', section || 'Uploaded');
-
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
-
-      try {
-        const res = await fetch('/api/docs/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Upload failed');
-        }
-
-        // Navigate to the first uploaded file
-        if (data.results && data.results.length > 0) {
-          router.push(`/docs/${data.results[0].slug}`);
-          router.refresh();
-        }
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки');
-      } finally {
-        setUploading(false);
-      }
-    },
-    [section, router]
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      handleFileUpload(e.dataTransfer.files);
-    },
-    [handleFileUpload]
-  );
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
+  const {
+    title,
+    section,
+    slug,
+    setSlug,
+    sectionOrder,
+    setSectionOrder,
+    order,
+    setOrder,
+    content,
+    setContent,
+    saving,
+    error,
+    uploading,
+    handleTitleChange,
+    handleSave,
+    handleFileUpload,
+    handleDrop,
+    handleDragOver,
+    setSection,
+  } = useNewDoc({ router, searchParams });
 
   return (
     <div
@@ -281,60 +173,7 @@ function NewDocPageInner() {
           <MDXEditor
             markdown={content}
             onChange={setContent}
-            plugins={[
-              headingsPlugin(),
-              listsPlugin(),
-              quotePlugin(),
-              thematicBreakPlugin(),
-              markdownShortcutPlugin(),
-              linkPlugin(),
-              linkDialogPlugin(),
-              tablePlugin(),
-              codeBlockPlugin(),
-              codeMirrorPlugin({
-                codeBlockLanguages: {
-                  js: 'JavaScript',
-                  ts: 'TypeScript',
-                  tsx: 'TypeScript (React)',
-                  jsx: 'JavaScript (React)',
-                  python: 'Python',
-                  css: 'CSS',
-                  html: 'HTML',
-                  bash: 'Bash',
-                  shell: 'Shell',
-                  json: 'JSON',
-                  yaml: 'YAML',
-                  sql: 'SQL',
-                  mermaid: 'Mermaid',
-                },
-              }),
-              diffSourcePlugin({
-                viewMode: 'rich-text',
-                diffMarkdown: content,
-              }),
-              toolbarPlugin({
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo />
-                    <Separator />
-                    <BoldItalicUnderlineToggles />
-                    <StrikeThroughSupSubToggles />
-                    <Separator />
-                    <BlockTypeSelect />
-                    <ListsToggle />
-                    <Separator />
-                    <CreateLink />
-                    <InsertTable />
-                    <InsertThematicBreak />
-                    <InsertCodeBlock />
-                    <Separator />
-                    <DiffSourceToggleWrapper>
-                      <></>
-                    </DiffSourceToggleWrapper>
-                  </>
-                ),
-              }),
-            ]}
+            plugins={getEditorPlugins({ markdown: content })}
           />
         </div>
       </div>

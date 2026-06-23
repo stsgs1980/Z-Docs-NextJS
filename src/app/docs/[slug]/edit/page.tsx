@@ -1,132 +1,35 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import {
-  MDXEditor,
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  thematicBreakPlugin,
-  markdownShortcutPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  tablePlugin,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  diffSourcePlugin,
-  frontmatterPlugin,
-  toolbarPlugin,
-  BoldItalicUnderlineToggles,
-  StrikeThroughSupSubToggles,
-  ListsToggle,
-  BlockTypeSelect,
-  CreateLink,
-  InsertTable,
-  InsertThematicBreak,
-  InsertCodeBlock,
-  InsertFrontmatter,
-  DiffSourceToggleWrapper,
-  UndoRedo,
-  Separator,
-} from '@mdxeditor/editor';
+import { MDXEditor } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-
-interface DocData {
-  meta: {
-    title: string;
-    section: string;
-    sectionOrder?: number;
-    order: number;
-    slug: string;
-  };
-  content: string;
-}
+import { getEditorPlugins } from '@/components/editor/mdx-editor-config';
+import { useEditDoc } from './use-edit-doc';
+import { DeleteConfirmDialog } from './delete-confirm-dialog';
+import { FrontmatterEditor } from './frontmatter-editor';
 
 export default function EditDocPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
 
-  const [doc, setDoc] = useState<DocData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [commitMessage, setCommitMessage] = useState('');
-  const [deleting, setDeleting] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  // Load document
-  useEffect(() => {
-    async function loadDoc() {
-      try {
-        const res = await fetch(`/api/docs/${slug}`);
-        if (!res.ok) throw new Error('Page not found');
-        const data = await res.json();
-        setDoc(data);
-        setCommitMessage(`docs: update ${slug}`);
-      } catch (err) {
-        setError('Не удалось загрузить страницу');
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadDoc();
-  }, [slug]);
-
-  const handleDelete = useCallback(async () => {
-    setDeleting(true);
-    setError('');
-    try {
-      const res = await fetch(`/api/docs/${slug}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Delete failed');
-      }
-      router.push('/docs/');
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Ошибка удаления');
-      setShowDeleteConfirm(false);
-    } finally {
-      setDeleting(false);
-    }
-  }, [slug, router]);
-
-  const handleSave = useCallback(async () => {
-    if (!doc) return;
-    setSaving(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const res = await fetch(`/api/docs/${slug}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...doc.meta,
-          content: doc.content,
-          commitMessage: commitMessage || `docs: update ${slug}`,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Save failed');
-      }
-
-      setSuccess('Сохранено!');
-      setTimeout(() => {
-        router.push(`/docs/${slug}`);
-        router.refresh();
-      }, 1000);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Ошибка сохранения');
-    } finally {
-      setSaving(false);
-    }
-  }, [doc, slug, commitMessage, router]);
+  const {
+    doc,
+    setDoc,
+    loading,
+    saving,
+    error,
+    success,
+    commitMessage,
+    setCommitMessage,
+    deleting,
+    showDeleteConfirm,
+    setShowDeleteConfirm,
+    handleDelete,
+    handleSave,
+  } = useEditDoc({ slug, router });
 
   if (loading) {
     return (
@@ -214,116 +117,16 @@ export default function EditDocPage() {
       </div>
 
       {/* Delete confirmation modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-background border border-border rounded-xl p-6 max-w-[400px] w-full mx-4 shadow-2xl">
-            <h3 className="text-[16px] font-semibold text-foreground mb-2">
-              Удалить страницу?
-            </h3>
-            <p className="text-[14px] text-muted-foreground mb-6">
-              Страница &laquo;{doc?.meta.title}&raquo; будет удалена без возможности восстановления.
-            </p>
-            <div className="flex items-center justify-end gap-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 text-[13px] rounded-lg border border-border text-foreground hover:bg-muted/50 transition-colors"
-              >
-                Отмена
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="px-4 py-2 text-[13px] font-medium rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50"
-              >
-                {deleting ? 'Удаление...' : 'Удалить'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmDialog
+        show={showDeleteConfirm}
+        title={doc.meta.title}
+        deleting={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
 
       {/* Frontmatter edit */}
-      <div className="border-b border-border bg-muted/30">
-        <details className="mx-auto max-w-[960px] px-4 py-3">
-          <summary className="text-[14px] font-medium text-muted-foreground cursor-pointer hover:text-foreground">
-            Метаданные (frontmatter)
-          </summary>
-          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            <div>
-              <label className="block text-[12px] text-muted-foreground mb-1">
-                Заголовок
-              </label>
-              <input
-                type="text"
-                value={doc.meta.title}
-                onChange={(e) =>
-                  setDoc({ ...doc, meta: { ...doc.meta, title: e.target.value } })
-                }
-                className="w-full px-3 py-1.5 text-[14px] rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] text-muted-foreground mb-1">
-                Секция
-              </label>
-              <input
-                type="text"
-                value={doc.meta.section}
-                onChange={(e) =>
-                  setDoc({
-                    ...doc,
-                    meta: { ...doc.meta, section: e.target.value },
-                  })
-                }
-                className="w-full px-3 py-1.5 text-[14px] rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] text-muted-foreground mb-1">
-                Порядок секции
-              </label>
-              <input
-                type="number"
-                value={doc.meta.sectionOrder ?? 0}
-                onChange={(e) =>
-                  setDoc({
-                    ...doc,
-                    meta: { ...doc.meta, sectionOrder: parseInt(e.target.value) || 0 },
-                  })
-                }
-                className="w-full px-3 py-1.5 text-[14px] rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] text-muted-foreground mb-1">
-                Порядок страницы
-              </label>
-              <input
-                type="number"
-                value={doc.meta.order}
-                onChange={(e) =>
-                  setDoc({
-                    ...doc,
-                    meta: { ...doc.meta, order: parseInt(e.target.value) || 0 },
-                  })
-                }
-                className="w-full px-3 py-1.5 text-[14px] rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] text-muted-foreground mb-1">
-                Slug
-              </label>
-              <input
-                type="text"
-                value={doc.meta.slug}
-                disabled
-                className="w-full px-3 py-1.5 text-[14px] rounded-md border border-border bg-muted text-muted-foreground cursor-not-allowed"
-              />
-            </div>
-          </div>
-        </details>
-      </div>
+      <FrontmatterEditor doc={doc} onChange={setDoc} />
 
       {/* MDX Editor */}
       <div className="mx-auto max-w-[960px] px-4 py-6">
@@ -331,66 +134,7 @@ export default function EditDocPage() {
           <MDXEditor
             markdown={doc.content}
             onChange={(md) => setDoc({ ...doc, content: md })}
-            plugins={[
-              headingsPlugin(),
-              listsPlugin(),
-              quotePlugin(),
-              thematicBreakPlugin(),
-              markdownShortcutPlugin(),
-              linkPlugin(),
-              linkDialogPlugin(),
-              tablePlugin(),
-              codeBlockPlugin(),
-              codeMirrorPlugin({
-                codeBlockLanguages: {
-                  js: 'JavaScript',
-                  ts: 'TypeScript',
-                  tsx: 'TypeScript (React)',
-                  jsx: 'JavaScript (React)',
-                  python: 'Python',
-                  css: 'CSS',
-                  html: 'HTML',
-                  bash: 'Bash',
-                  shell: 'Shell',
-                  json: 'JSON',
-                  yaml: 'YAML',
-                  markdown: 'Markdown',
-                  sql: 'SQL',
-                  rust: 'Rust',
-                  go: 'Go',
-                  java: 'Java',
-                  mermaid: 'Mermaid',
-                },
-              }),
-              frontmatterPlugin(),
-              diffSourcePlugin({
-                viewMode: 'rich-text',
-                diffMarkdown: doc.content,
-              }),
-              toolbarPlugin({
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo />
-                    <Separator />
-                    <BoldItalicUnderlineToggles />
-                    <StrikeThroughSupSubToggles />
-                    <Separator />
-                    <BlockTypeSelect />
-                    <ListsToggle />
-                    <Separator />
-                    <CreateLink />
-                    <InsertTable />
-                    <InsertThematicBreak />
-                    <InsertCodeBlock />
-                    <InsertFrontmatter />
-                    <Separator />
-                    <DiffSourceToggleWrapper>
-                      <></>
-                    </DiffSourceToggleWrapper>
-                  </>
-                ),
-              }),
-            ]}
+            plugins={getEditorPlugins({ markdown: doc.content, withFrontmatter: true })}
           />
         </div>
       </div>
