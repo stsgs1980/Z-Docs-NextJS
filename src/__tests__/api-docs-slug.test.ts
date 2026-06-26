@@ -29,7 +29,7 @@ vi.mock('fs', () => ({
 import { revalidatePath } from 'next/cache';
 import { GET as getDoc, PUT as updateDoc, DELETE as deleteDoc } from '@/app/api/docs/[slug]/route';
 
-const CONTENT_DIR = path.join(process.cwd(), 'src', 'content', 'docs');
+const CONTENT_DIR = path.join(process.cwd(), 'docs');
 
 function putMdx(slug: string, frontmatter: Record<string, unknown>, body: string) {
   const fm = Object.entries(frontmatter)

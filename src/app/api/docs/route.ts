@@ -6,7 +6,7 @@ import { execSync } from 'child_process';
 import { revalidatePath } from 'next/cache';
 import { bumpVersion } from '@/lib/version';
 
-const CONTENT_DIR = path.join(process.cwd(), 'src', 'content', 'docs');
+const CONTENT_DIR = path.join(process.cwd(), 'docs');
 
 function buildMdxFile(data: {
   title: string;
