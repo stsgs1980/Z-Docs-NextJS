@@ -1,6 +1,6 @@
 /**
- * MDX Content Utilities
- * Reads .mdx files from docs/, parses frontmatter,
+ * Content Utilities
+ * Reads .md and .mdx files from docs/, parses frontmatter,
  * generates navigation structure, and provides content for rendering.
  */
 import fs from "fs";
@@ -9,6 +9,19 @@ import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
 
 const CONTENT_DIR = path.join(process.cwd(), "docs");
+
+/**
+ * Resolve the file path for a slug.
+ * Tries .mdx first, then .md.
+ * Returns null if neither exists.
+ */
+export function resolveDocPath(slug: string): string | null {
+  for (const ext of [".mdx", ".md"]) {
+    const p = path.join(CONTENT_DIR, `${slug}${ext}`);
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
 
 export interface DocMeta {
   title: string;
@@ -36,18 +49,30 @@ export interface Heading {
 }
 
 /**
- * Get all MDX slugs (filenames without extension)
+ * Get all doc slugs (filenames without extension).
+ * Supports both .md and .mdx files.
+ * If both exist for the same slug, .mdx takes priority.
  */
 export function getAllSlugs(): string[] {
-  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".mdx"));
-  return files.map((f) => f.replace(/\.mdx$/, ""));
+  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".md") || f.endsWith(".mdx"));
+  const slugMap = new Map<string, string>(); // slug -> extension
+  for (const f of files) {
+    const base = f.replace(/\.(md|mdx)$/, "");
+    const ext = f.endsWith(".mdx") ? ".mdx" : ".md";
+    // .mdx always wins over .md
+    if (ext === ".mdx" || !slugMap.has(base)) {
+      slugMap.set(base, ext);
+    }
+  }
+  return Array.from(slugMap.keys());
 }
 
 /**
  * Get a single doc page by slug
  */
 export function getDocBySlug(slug: string): DocPage {
-  const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  const filePath = resolveDocPath(slug);
+  if (!filePath) throw new Error(`Doc not found: ${slug}`);
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
 

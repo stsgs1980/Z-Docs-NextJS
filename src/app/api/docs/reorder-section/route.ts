@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
     );
   }
 
-  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".mdx"));
+  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".md") || f.endsWith(".mdx"));
   const updatedSections = new Set<string>();
 
   for (const file of files) {

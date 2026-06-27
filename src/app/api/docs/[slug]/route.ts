@@ -4,6 +4,7 @@ import path from "path";
 import matter from "gray-matter";
 import { execSync } from "child_process";
 import { revalidatePath } from "next/cache";
+import { resolveDocPath } from "@/lib/mdx-utils";
 import { bumpVersion } from "@/lib/version";
 
 const CONTENT_DIR = path.join(process.cwd(), "docs");
@@ -61,9 +62,9 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  const filePath = resolveDocPath(slug);
 
-  if (!fs.existsSync(filePath)) {
+  if (!filePath) {
     return NextResponse.json({ error: "Page not found" }, { status: 404 });
   }
 
@@ -93,9 +94,9 @@ export async function PUT(
     );
   }
 
-  const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  const filePath = resolveDocPath(slug);
 
-  if (!fs.existsSync(filePath)) {
+  if (!filePath) {
     return NextResponse.json({ error: "Page not found" }, { status: 404 });
   }
 
@@ -125,9 +126,9 @@ export async function DELETE(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  const filePath = resolveDocPath(slug);
 
-  if (!fs.existsSync(filePath)) {
+  if (!filePath) {
     return NextResponse.json({ error: "Page not found" }, { status: 404 });
   }
 

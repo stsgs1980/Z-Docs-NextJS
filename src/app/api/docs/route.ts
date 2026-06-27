@@ -4,9 +4,9 @@ import path from "path";
 import matter from "gray-matter";
 import { execSync } from "child_process";
 import { revalidatePath } from "next/cache";
-import { bumpVersion } from "@/lib/version";
+import { resolveDocPath } from "@/lib/mdx-utils";
 
-const CONTENT_DIR = path.join(process.cwd(), "docs");
+import { bumpVersion } from "@/lib/version";
 
 function buildMdxFile(data: {
   title: string;
@@ -49,19 +49,23 @@ function gitCommit(filePath: string, message: string): void {
  * GET /api/docs — list all docs with metadata
  */
 export async function GET() {
-  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".mdx"));
+  const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".md") || f.endsWith(".mdx"));
+  const seen = new Set<string>();
 
   const docs = files.map((file) => {
+    const base = file.replace(/\.(md|mdx)$/, "");
+    if (seen.has(base)) return null;
+    seen.add(base);
     const fileContent = fs.readFileSync(path.join(CONTENT_DIR, file), "utf-8");
     const { data } = matter(fileContent);
     return {
-      slug: file.replace(/\.mdx$/, ""),
+      slug: base,
       title: data.title || file,
       section: data.section || "Uncategorized",
       sectionOrder: data.sectionOrder ?? data["section-order"] ?? 0,
       order: data.order ?? 0,
     };
-  });
+  }).filter(Boolean);
 
   return NextResponse.json({ docs });
 }
@@ -92,7 +96,7 @@ export async function POST(request: NextRequest) {
 
   const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
 
-  if (fs.existsSync(filePath)) {
+  if (fs.existsSync(filePath) || resolveDocPath(slug)) {
     return NextResponse.json(
       { error: `Page "${slug}" already exists` },
       { status: 409 },
