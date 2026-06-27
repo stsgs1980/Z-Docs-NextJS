@@ -68,3 +68,20 @@ Stage Summary:
 - `packageManager` added so Vercel uses bun + bun.lock
 - Build: clean (0 errors)
 - Tests: 131 passed, 0 failed
+
+---
+
+Task ID: 3
+Agent: main
+Task: Add version bumping rule to CONTRIBUTING.md
+
+Work Log:
+- Created `.github/CONTRIBUTING.md` with development rules
+- Version bumping table: `feat:` → minor, `fix:` → patch, `BREAKING CHANGE:` → major, `docs:`/`chore:`/`style:` → skip
+- Added commit message conventions (Conventional Commits), code style rules, content file rules, PR checklist
+- Committed and pushed: `9042bed docs: add CONTRIBUTING.md with version bumping rules`
+
+Stage Summary:
+- `.github/CONTRIBUTING.md` created — GitHub shows it on PR/issue creation
+- Version bumping rule is the first section, most prominent
+- Rule: any functional change touching `src/`, `prisma/`, `mini-services/`, or `docs/` content MUST bump `package.json` version
