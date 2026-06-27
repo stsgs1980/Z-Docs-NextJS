@@ -174,7 +174,7 @@ export default function Sidebar({
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="border-border bg-sidebar sticky top-[49px] hidden h-[calc(100vh-49px)] shrink-0 border-r xl:block">
+      <aside className="docs-desktop-sidebar border-border bg-sidebar sticky top-[49px] h-[calc(100vh-49px)] shrink-0 border-r">
         {sidebarContent}
       </aside>
 

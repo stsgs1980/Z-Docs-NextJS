@@ -73,7 +73,7 @@ function NewDocPageInner() {
           <div className="flex items-center gap-2">
             <label className="text-muted-foreground hover:text-foreground hover:bg-muted flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] transition-colors">
               <Upload className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">
+              <span className="docs-show-sm-inline">
                 {uploading ? "Загрузка..." : "Загрузить файл"}
               </span>
               <input

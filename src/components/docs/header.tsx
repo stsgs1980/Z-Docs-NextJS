@@ -84,7 +84,7 @@ export default function Header({
             </span>
           </Link>
 
-          <nav className="ml-4 hidden items-center gap-1 md:flex">
+          <nav className="docs-show-md-flex ml-4 items-center gap-1">
             <Link
               href={`/docs/${WIKI_INDEX_SLUG}/`}
               className={isWikiIndex ? activeTabStyle : inactiveTabStyle}
@@ -106,11 +106,11 @@ export default function Header({
           {canEdit && (
             <Link
               href="/docs/new/"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted hidden items-center gap-1 rounded-md px-2.5 py-1.5 text-[var(--text-sm)] transition-colors sm:flex"
+              className="docs-show-sm-flex text-muted-foreground hover:text-foreground hover:bg-muted items-center gap-1 rounded-md px-2.5 py-1.5 text-[var(--text-sm)] transition-colors"
               title="Create page"
             >
               <Plus className="h-4 w-4" />
-              <span className="hidden lg:inline">Create</span>
+              <span className="docs-show-lg-inline">Create</span>
             </Link>
           )}
 
@@ -134,7 +134,7 @@ export default function Header({
                 <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                 <path d="m15 5 4 4" />
               </svg>
-              <span className="hidden lg:inline">Edit</span>
+              <span className="docs-show-lg-inline">Edit</span>
             </Link>
           )}
 
@@ -145,14 +145,14 @@ export default function Header({
             href="https://github.com/stsgs1980/StsDev-Wiki-Template"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-foreground text-background hover:bg-foreground/90 hidden items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium text-[var(--text-sm)] transition-colors sm:flex"
+            className="docs-show-sm-flex bg-foreground text-background hover:bg-foreground/90 items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium text-[var(--text-sm)] transition-colors"
           >
             GitHub
             <ExternalLink className="h-3 w-3" />
           </a>
 
           {version && (
-            <span className="text-muted-foreground/60 border-border hidden items-center rounded-md border px-2 py-1 font-mono text-[11px] select-none md:inline-flex">
+            <span className="docs-show-md-inline-flex text-muted-foreground/60 border-border items-center rounded-md border px-2 py-1 font-mono text-[11px] select-none">
               v{version}
               {build ? `.${build}` : ""}
             </span>

@@ -283,6 +283,92 @@
   }
 }
 
+/* ===== RESPONSIVE VISIBILITY — Tailwind v4/Turbopack workaround ===== */
+/* Turbopack does not generate responsive variant utilities (xl:block, etc.).
+   These CSS rules provide the same behavior for elements using hidden + responsive. */
+
+.docs-desktop-sidebar,
+.docs-desktop-toc {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .docs-desktop-sidebar,
+  .docs-desktop-toc {
+    display: block;
+  }
+}
+
+.docs-show-sm {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .docs-show-sm {
+    display: block;
+  }
+}
+
+.docs-show-sm-inline {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .docs-show-sm-inline {
+    display: inline;
+  }
+}
+
+.docs-show-md {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .docs-show-md {
+    display: block;
+  }
+}
+
+.docs-show-lg-inline {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .docs-show-lg-inline {
+    display: inline;
+  }
+}
+
+.docs-show-sm-flex {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .docs-show-sm-flex {
+    display: flex;
+  }
+}
+
+.docs-show-md-flex {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .docs-show-md-flex {
+    display: flex;
+  }
+}
+
+.docs-show-md-inline-flex {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .docs-show-md-inline-flex {
+    display: inline-flex;
+  }
+}
+
 /* ===== SYNTAX HIGHLIGHTING — dark-zai custom tokens ===== */
 
 /* Override react-syntax-highlighter token colors in dark mode */

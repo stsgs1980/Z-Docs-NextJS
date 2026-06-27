@@ -13,7 +13,7 @@ export default function TOC({ headings, activeId }: TOCProps) {
 
   return (
     /* TOC — width controlled by docs-golden-grid (220px on xl+) */
-    <aside className="sticky top-[49px] hidden h-[calc(100vh-49px)] shrink-0 scrollbar-thin overflow-y-auto xl:block">
+    <aside className="docs-desktop-toc sticky top-[49px] h-[calc(100vh-49px)] shrink-0 scrollbar-thin overflow-y-auto">
       <nav className="px-4 py-8">
         <h4 className="text-muted-foreground mb-3 font-semibold tracking-wider text-[var(--text-sm)] uppercase">
           На этой странице
