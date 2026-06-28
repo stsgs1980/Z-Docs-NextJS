@@ -1,7 +1,7 @@
 ---
 title: "Standard: Markdown Formatting v2.4 (EN)"
-section: "Стандарты"
-sectionOrder: 20
+section: "Markdown Standard"
+sectionOrder: 30
 order: 1
 slug: "markdown-standard"
 ---

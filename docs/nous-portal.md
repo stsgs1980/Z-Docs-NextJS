@@ -1,7 +1,7 @@
 ---
 title: "Nous Portal — Единая подписка для Hermes Agent"
-section: "Интеграции"
-sectionOrder: 60
+section: "Nous Portal"
+sectionOrder: 110
 order: 1
 slug: "nous-portal"
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Безопасность Hermes Agent"
 section: "Безопасность"
-sectionOrder: 70
+sectionOrder: 130
 order: 1
 slug: "bezopasnost"
 ---

@@ -1,8 +1,8 @@
 ---
 title: "Skills система"
-section: "Возможности"
-sectionOrder: 50
-order: 3
+section: "Skills"
+sectionOrder: 100
+order: 1
 slug: "skills-sistema"
 ---
 

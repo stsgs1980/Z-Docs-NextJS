@@ -1,7 +1,7 @@
 ---
 title: "Конфигурация Hermes Agent"
 section: "Конфигурация"
-sectionOrder: 30
+sectionOrder: 50
 order: 1
 slug: "konfiguraciya-hermes"
 ---

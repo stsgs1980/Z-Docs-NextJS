@@ -1,8 +1,8 @@
 ---
 title: "Troubleshooting Hermes Agent"
-section: "Использование"
-sectionOrder: 40
-order: 2
+section: "Troubleshooting"
+sectionOrder: 70
+order: 1
 slug: "troubleshooting"
 ---
 

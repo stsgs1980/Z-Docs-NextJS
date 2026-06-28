@@ -1,6 +1,6 @@
 ---
 title: "Архитектура Hermes Agent"
-section: "Начало работы"
+section: "Архитектура Hermes"
 sectionOrder: 10
 order: 1
 slug: "arhitektura-hermes-agent"

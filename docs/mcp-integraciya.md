@@ -1,8 +1,8 @@
 ---
 title: "MCP интеграция (Model Context Protocol)"
-section: "Интеграции"
-sectionOrder: 60
-order: 2
+section: "MCP интеграция"
+sectionOrder: 120
+order: 1
 slug: "mcp-integraciya"
 ---
 

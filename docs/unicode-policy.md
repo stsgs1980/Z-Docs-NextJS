@@ -1,8 +1,8 @@
 ---
 title: "Standard: No-Unicode Policy v2.3"
-section: "Стандарты"
-sectionOrder: 20
-order: 2
+section: "No-Unicode Policy"
+sectionOrder: 40
+order: 1
 slug: "unicode-policy"
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: "Установка Hermes Agent на Windows"
-section: "Начало работы"
-sectionOrder: 10
-order: 2
+section: "Установка"
+sectionOrder: 20
+order: 1
 slug: "ustanovka-na-windows"
 ---
 

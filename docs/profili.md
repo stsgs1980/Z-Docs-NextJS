@@ -1,8 +1,8 @@
 ---
 title: "Профили — запуск нескольких агентов"
-section: "Возможности"
-sectionOrder: 50
-order: 2
+section: "Профили"
+sectionOrder: 90
+order: 1
 slug: "profili"
 ---
 

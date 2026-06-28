@@ -1,7 +1,7 @@
 ---
 title: "Личность агента (SOUL.md) и контекстные файлы"
-section: "Возможности"
-sectionOrder: 50
+section: "Личность агента"
+sectionOrder: 80
 order: 1
 slug: "lichnost-agenta"
 ---
