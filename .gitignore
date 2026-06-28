@@ -44,11 +44,4 @@ next-env.d.ts
 /tool-results/
 /agent-ctx/
 /upload/
-/worklog.md
-skills/sp-*
-
-# sandbox-only (not for production)
-.zscripts/
-/db/
-download/
-/prisma/
+/worklog.mdskills/sp-*

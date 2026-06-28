@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/docs/theme-provider";
 import "./globals.css";
+import { SelectElementFab } from '@stsgs1980/fab-inspector';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,16 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "StsDev Wiki Template",
-  description:
-    "Wiki documentation template built on Next.js 16 with MDX, syntax highlighting, themes, and in-app editing",
-  keywords: [
-    "wiki",
-    "documentation",
-    "Next.js",
-    "MDX",
-    "Docs-as-Code",
-    "template",
-  ],
+  description: "Wiki documentation template built on Next.js 16 with MDX, syntax highlighting, themes, and in-app editing",
+  keywords: ["wiki", "documentation", "Next.js", "MDX", "Docs-as-Code", "template"],
 };
 
 export default function RootLayout({
@@ -35,9 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+        <SelectElementFab />
       </body>
     </html>
   );
