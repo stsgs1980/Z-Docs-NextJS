@@ -66,7 +66,7 @@ hermes-agent/
 │   └── trajectory.py         # Сохранение траекторий
 │
 ├── hermes_cli/               # CLI подкоманды
-│   ├── main.py               # Точка входа所有 hermes подкоманд
+│   ├── main.py               # Точка входа всех hermes подкоманд
 │   ├── config.py             # Конфигурация по умолчанию
 │   ├── auth.py               # Реестр провайдеров,credentials
 │   ├── runtime_provider.py   # Разрешение провайдера → api_mode + credentials
