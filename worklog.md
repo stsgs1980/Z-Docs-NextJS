@@ -85,3 +85,34 @@ Stage Summary:
 - `.github/CONTRIBUTING.md` created — GitHub shows it on PR/issue creation
 - Version bumping rule is the first section, most prominent
 - Rule: any functional change touching `src/`, `prisma/`, `mini-services/`, or `docs/` content MUST bump `package.json` version
+
+---
+
+Task ID: 4
+Agent: main
+Task: Add 19 Hermes Agent docs, scrollable tab bar, sidebar toggle, CJK fix, typography unification, version bump
+
+Work Log:
+
+- Deleted 5 unnecessary demo/standard docs: showcase-komponentov, showcase-real-content, o-sts-wiki-index, markdown-standard, unicode-policy
+- Extracted all 19 Hermes Agent docs from archive with correct frontmatter (title, section, sectionOrder 10-190, order 1, slug)
+- Each doc = 1 unique section = 1 separate tab in header (20 tabs total including index)
+- Rewrote `src/components/docs/header.tsx`: scrollable tab bar with left/right ChevronLeft/ChevronRight arrows, useRef + scrollBy + ResizeObserver, auto-scrollIntoView for active tab
+- Added sidebar toggle button (PanelLeftClose/PanelLeftOpen) in header, visible at xl+ breakpoint via `.docs-show-xl` CSS class
+- Updated `src/components/docs/sidebar/sidebar.tsx` with `visible` prop, applies `!hidden` when false
+- Updated `src/app/docs/[slug]/docs-shell.tsx` with `sidebarVisible` state management
+- Added `.docs-sidebar-hidden` (2-col grid) and `.docs-show-xl` (display:none default, block at 1280px+) in globals.css
+- Fixed CJK Chinese characters injected into 5 Russian docs (regex `[\u4e00-\u9fff]` scan, replaced with Russian equivalents)
+- Fixed MDX compile errors: bare `<` in bezopasnost.md and credential-pools.md wrapped in backticks
+- Unified typography system: replaced hardcoded `text-[Npx]` with `var(--text-*)` CSS custom properties in rem units
+- All 131 tests passing, 0 failures
+- Version bumped 1.4.0 → 1.5.0
+
+Stage Summary:
+
+- 19 Hermes Agent docs + 1 index = 20 tabs in scrollable header
+- Scrollable tab bar with arrows for navigation across all tabs
+- Sidebar toggle button (xl+ breakpoint)
+- Zero CJK characters in Russian docs
+- Unified rem-based typography tokens
+- Tests: 131 passed, 0 failed
