@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { SearchButton } from "./search-dialog";
 import ThemeToggle from "./theme-toggle";
-import { Menu, X, ExternalLink, Plus, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Menu, X, ExternalLink, Plus, PanelLeftClose, PanelLeftOpen, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface HeaderProps {
   onSearchOpen: () => void;
@@ -31,6 +31,46 @@ export default function Header({
   sidebarVisible = true,
   onToggleSidebar,
 }: HeaderProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      ro.disconnect();
+    };
+  }, [tabs, checkScroll]);
+
+  // Auto-scroll active tab into view
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const activeTab = el.querySelector("[data-active-tab]");
+    if (activeTab) {
+      activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [currentSection]);
+
+  const scroll = (direction: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction === "left" ? -200 : 200, behavior: "smooth" });
+  };
+
   const activeTabStyle =
     "px-3 py-1 text-[14px] font-medium text-foreground bg-muted rounded-full whitespace-nowrap";
   const inactiveTabStyle =
@@ -103,21 +143,45 @@ export default function Header({
           </Link>
         </div>
 
-        {/* Tabs — scrollable on overflow */}
-        <nav className="docs-show-md-flex ml-2 flex items-center gap-1 overflow-x-auto scrollbar-none">
-          {tabs.map((tab) => {
-            const isActive = currentSection === tab.title;
-            return (
-              <Link
-                key={tab.title}
-                href={`/docs/${tab.firstSlug}/`}
-                className={isActive ? activeTabStyle : inactiveTabStyle}
-              >
-                {tab.title}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Tabs — scrollable with arrow buttons */}
+        <div className="docs-show-md-flex relative flex min-w-0 flex-1 items-center ml-2">
+          {canScrollLeft && (
+            <button
+              onClick={() => scroll("left")}
+              className="bg-background/90 border-border absolute left-0 z-10 flex h-full w-7 items-center justify-center border-y border-l shadow-sm backdrop-blur-sm"
+              aria-label="Scroll tabs left"
+            >
+              <ChevronLeft className="text-muted-foreground h-4 w-4" />
+            </button>
+          )}
+          <nav
+            ref={scrollRef}
+            className="flex items-center gap-1 overflow-x-auto px-1 py-0.5 scrollbar-none"
+          >
+            {tabs.map((tab) => {
+              const isActive = currentSection === tab.title;
+              return (
+                <Link
+                  key={tab.title}
+                  href={`/docs/${tab.firstSlug}/`}
+                  data-active-tab={isActive || undefined}
+                  className={isActive ? activeTabStyle : inactiveTabStyle}
+                >
+                  {tab.title}
+                </Link>
+              );
+            })}
+          </nav>
+          {canScrollRight && (
+            <button
+              onClick={() => scroll("right")}
+              className="bg-background/90 border-border absolute right-0 z-10 flex h-full w-7 items-center justify-center border-y border-r shadow-sm backdrop-blur-sm"
+              aria-label="Scroll tabs right"
+            >
+              <ChevronRight className="text-muted-foreground h-4 w-4" />
+            </button>
+          )}
+        </div>
 
         {/* Right: Actions */}
         <div className="ml-auto flex shrink-0 items-center gap-2">
