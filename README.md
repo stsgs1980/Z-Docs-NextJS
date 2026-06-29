@@ -2,6 +2,31 @@
 
 **Стандартизированный шаблон базы знаний** на базе Next.js 16 — MDX-контент, подсветка синтаксиса, тёмная/светлая темы, встроенный редактор, статический деплой на GitHub Pages.
 
+
+[![Next.js](https://img.shields.io/badge/Next.js-black?style=flat-square)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-61DAFB?style=flat-square)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square)](https://www.typescriptlang.org)
+[![Tailwind_CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square)](https://tailwindcss.com)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=flat-square)](https://ui.shadcn.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
+
+## Table of Contents
+
+- [Принцип стандартизированного шаблона](#принцип-стандартизированного-шаблона)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Local Development](#local-development)
+- [Install dependencies](#install-dependencies)
+- [Start dev server](#start-dev-server)
+- [Linting](#linting)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Верификация шаблона](#верификация-шаблона)
+- [Deployment](#deployment)
+- [Manual deployment](#manual-deployment)
+- [License](#license)
+
 ## Принцип стандартизированного шаблона
 
 Этот репозиторий — не просто проект, а **шаблон (template)**, который клонируется и используется как основа для создания баз знаний. Все решения принимаются из этого принципа:
@@ -45,21 +70,41 @@
 ## Local Development
 
 ```bash
-# Install dependencies
+## Install dependencies
 bun install
 
-# Start dev server
+## Start dev server
 bun run dev
 
-# Linting
+## Linting
 bun run lint
 ```
 
 Open http://localhost:3000 — the documentation will load with the dark theme by default.
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+ or Bun
+
+### Installation
+
+```bash
+git clone https://github.com/stsgs1980/StsDev-Wiki-Template.git
+cd StsDev-Wiki-Template
+bun install
+```
+
+### Run
+
+```bash
+bun run dev
+```
+
 ## Project Structure
 
-```
+```css
 src/
   app/
     layout.tsx                # Root layout + ThemeProvider
@@ -102,7 +147,7 @@ src/
 The CI workflow automatically removes server routes (API, edit, new) and builds a static site:
 
 ```bash
-# Manual deployment
+## Manual deployment
 GITHUB_PAGES=true npx next build
 ```
 
@@ -115,4 +160,8 @@ bun run start
 
 In server mode, in-app editing and the API are available.
 
-Built with: Next.js 16 + TypeScript + Tailwind CSS
+
+## License
+
+[MIT](LICENSE)
+
